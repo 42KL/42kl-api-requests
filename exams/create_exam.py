@@ -75,6 +75,11 @@ choices = [
 exam_choice = int(input(f"{Fore.YELLOW}Type in your choice from 0-4: "))
 print(f"{Fore.CYAN}You have chosen {choices[exam_choice][1]}")
 
+# Check for DO NOT SUBSCRIBE anomalies.
+ans = input(f"{Fore.YELLOW}Is this a DO NOT SUBSCRIBE session? (Y if yes, otherwise no): ")
+if ans == "Y":
+	choices[exam_choice][1] = "DO NOT SUBSCRIBE"
+
 # Get the location of the exam. Defaults to 42KL Campus
 exam_location = input(f"{Fore.YELLOW}Type in the exam location (default is 42KL Campus): ")
 if (exam_location == ""):
@@ -82,16 +87,24 @@ if (exam_location == ""):
 
 # Get the starting time and duration of the exam. Get the time in Malaysian time, and adjust to Paris time
 # Paris time = Malaysia time - 8 hours
-raw_date = input(f"{Fore.YELLOW}Type in the start date of the exam in the format DD/MM/YYYY, e.g 18/3/2024: ")
-raw_time = input(f"{Fore.YELLOW}Type in the start time of the exam in the format HH:MM, e.g. 14:30: ")
 
-# Auto fit duration based on choice, but ask just in case.
+# Auto fit duration and time based on choice, but ask just in case.
 if exam_choice == 3:
 	default_duration = 8
+	default_time = "10:30"
 elif exam_choice in [4, 5]:
 	default_duration = 3
+	default_time = "14:00"
 else:
 	default_duration = 4
+	default_time = "14:30"
+
+raw_date = input(f"{Fore.YELLOW}Type in the start date of the exam in the format DD/MM/YYYY, e.g 18/3/2024: ")
+
+# Start time must be in the format of HH:MM, e.g. 9:00 or 15:30
+raw_time = input(f"{Fore.YELLOW}Type in the start time of the exam (default is {default_time}): ")
+if (raw_time == ""):
+	raw_time = default_time
 
 duration = input(f"{Fore.YELLOW}Type in the number of hours the exam will take (default is {default_duration} hours): ")
 if (duration == ""):
