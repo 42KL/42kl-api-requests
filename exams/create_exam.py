@@ -85,6 +85,14 @@ exam_location = input(f"{Fore.YELLOW}Type in the exam location (default is 42KL 
 if (exam_location == ""):
 	exam_location = "42KL Campus"
 
+# Ask if the exam is to be invisible
+invis = input("Is the exam meant to be invisible? Y if yes, no otherwise.")
+if invis == "Y":
+	choices[exam_choice][1] += " (INVISIBLE)"
+	vis_state = "false"
+else:
+	vis_state = "true"
+
 # Get the starting time and duration of the exam. Get the time in Malaysian time, and adjust to Paris time
 # Paris time = Malaysia time - 8 hours
 
@@ -120,6 +128,7 @@ parsed_end = parsed_start + timedelta(hours=duration)
 final_start = parsed_start.strftime("%Y-%m-%dT%H:%M:00.000Z")
 final_end = parsed_end.strftime("%Y-%m-%dT%H:%M:00.000Z")
 
+
 # Confirm payload before sending
 print(f"{Fore.CYAN}\nSimulated payload - Check for final details")
 print(f"{Fore.CYAN}name : {choices[exam_choice][1]}")
@@ -128,6 +137,7 @@ print(f"{Fore.CYAN}end_at : {final_end}")
 print(f"{Fore.CYAN}location : {exam_location}")
 print(f"{Fore.CYAN}ip_range : \"10.11.0.0/16,10.12.0.0/16,10.13.0.0/16,10.14.0.0/16,10.15.0.0/16\"")
 print(f"{Fore.CYAN}campus_id : 34")
+print(f"{Fore.CYAN}visible: {vis_state}")
 print(f"{Fore.CYAN}project_ids : {choices[exam_choice][0]}")
 
 print(f"\n{Fore.RED}CONFIRMATION")
@@ -144,6 +154,7 @@ payload = {
 		"ip_range": "10.11.0.0/16,10.12.0.0/16, 10.13.0.0/16, 10.14.0.0/16, 10.15.0.0/16",
 		"campus_id": "34",
 		"ativate_waitlist": "false",
+		"visible": vis_state,
 		"project_ids": choices[exam_choice][0]
 	}
 }

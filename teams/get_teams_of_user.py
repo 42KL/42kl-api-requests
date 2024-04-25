@@ -28,7 +28,7 @@ token = oauth.fetch_token(
 )
 
 # user_id = 172791
-user_id = "damdayan"
+user_id = "tcadet"
 
 # Load 30 "items" in one page.
 params = {
@@ -52,22 +52,25 @@ print(f"{color} {response.status_code}")
 # Load response into a JSON array and reverse it to arrange the project list from
 # most recent to least recent.
 data = json.loads(response.text)
-data = data[::-1]
+# data = data[::-1]
 
 # From the reversed list, take the 5 most recent submitted and Momo-graded projects that are not exams
 # and get the project name (project_gitlab_path), id, and Momo's comment to check for Norme anomalies (teams_uploads)
 
-count = 0
-for item in data:
-	if count == 5:
-		break
-	if item['status'] != 'finished' or item['project_gitlab_path'] is None or len(item['teams_uploads']) == 0:
-		continue
-	proj_name = str(item['project_gitlab_path']).split('/')[-1]
-	norme_count = len([1 for x in item['teams_uploads'][0]['comment'].split('|') if 'Norme' in x])
-	print(f"[{count}] : {proj_name} | {item['id']} | {norme_count}")
-	count += 1
+# count = 0
+# for item in data:
+# 	if count == 5:
+# 		break
+# 	if item['status'] != 'finished' or item['project_gitlab_path'] is None or len(item['teams_uploads']) == 0:
+# 		continue
+# 	proj_name = str(item['project_gitlab_path']).split('/')[-1]
+# 	norme_count = len([1 for x in item['teams_uploads'][0]['comment'].split('|') if 'Norme' in x])
+# 	print(f"[{count}] : {proj_name} | {item['id']} | {norme_count}")
+# 	count += 1
 
-json_obj = json.dumps(data, indent=4)
-with open(f"teams_of_{user_id}.json", "w") as outfile:
-	outfile.write(json_obj)
+# json_obj = json.dumps(data, indent=4)
+# with open(f"teams_of_{user_id}.json", "w") as outfile:
+# 	outfile.write(json_obj)
+
+with open("new_test.json", "w") as outfile:
+	json.dump(data, outfile, indent=4)
