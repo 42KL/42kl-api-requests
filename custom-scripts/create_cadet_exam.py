@@ -29,11 +29,14 @@ token = oauth.fetch_token(
 )
 
 # First create dt variables that represent the next Wednesday and next Saturday for the week.
-# This script has to be run on either Sunday, Monday or Tuesday.
+# This script has to be run on either Sunday, Monday or Tuesday, otherwise the exams will be
+# created for the following week.
 dt_today = dt.now()
 num_to_wed = 3 - int(dt_today.strftime("%w"))
 
 dt_wed = dt_today + timedelta(days=num_to_wed)
+if (num_to_wed <= 0):
+	dt_wed += timedelta(days=7)
 dt_sat = dt_wed + timedelta(days=3)
 
 wed_start = dt_wed.strftime("%Y-%m-%dT06:00:00.000Z")
