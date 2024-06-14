@@ -86,12 +86,18 @@ if (exam_location == ""):
 	exam_location = "42KL Campus"
 
 # Ask if the exam is to be invisible
-invis = input("Is the exam meant to be invisible? Y if yes, no otherwise.")
+invis = input("Is the exam meant to be invisible? (Y if yes, otherwise no): ")
 if invis == "Y":
 	choices[exam_choice][1] += " (INVISIBLE)"
 	vis_state = "false"
 else:
 	vis_state = "true"
+
+# Ask if the exam is meant to be a pop-up exam, only for Cadet Ranking Exams.
+if exam_choice == 4:
+	popup = input("Is the exam ameant to be invisible? (Y if yes, otherwise no): ")
+	if popup == "Y":
+		choices[exam_choice][1] = "Pop-Up " + choices[exam_choice][1]
 
 # Get the starting time and duration of the exam. Get the time in Malaysian time, and adjust to Paris time
 # Paris time = Malaysia time - 8 hours
