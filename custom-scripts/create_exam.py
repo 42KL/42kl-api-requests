@@ -80,11 +80,6 @@ ans = input(f"{Fore.YELLOW}Is this a DO NOT SUBSCRIBE session? (Y if yes, otherw
 if ans == "Y":
 	choices[exam_choice][1] = "DO NOT SUBSCRIBE"
 
-# Get the location of the exam. Defaults to 42KL Campus
-exam_location = input(f"{Fore.YELLOW}Type in the exam location (default is 42KL Campus): ")
-if (exam_location == ""):
-	exam_location = "42KL Campus"
-
 # Ask if the exam is to be invisible
 invis = input("Is the exam meant to be invisible? (Y if yes, otherwise no): ")
 if invis == "Y":
@@ -95,9 +90,52 @@ else:
 
 # Ask if the exam is meant to be a pop-up exam, only for Cadet Ranking Exams.
 if exam_choice == 4:
-	popup = input("Is the exam ameant to be invisible? (Y if yes, otherwise no): ")
+	popup = input("Is the exam meant to be a Pop-up? (Y if yes, otherwise no): ")
 	if popup == "Y":
 		choices[exam_choice][1] = "Pop-Up " + choices[exam_choice][1]
+
+# Get the location of the exam.
+# Default for Cadet Ranking Exams - Unit 181
+# Default for Piscine - Unit 181, 182
+print(f"{Fore.CYAN}\n[ EXAM LOCATION SELECTION ]\n")
+choice_arr = [
+	["Unit 180", "10.11.0.0/16"],
+	["Unit 181", "10.12.0.0/16"],
+	["Unit 182", "10.13.0.0/16"],
+	["Unit 190", "10.14.0.0/16"],
+	["Unit 191", "10.15.0.0/16"],
+]
+print(f"{Fore.CYAN}Your options are:\n[0] - Unit 180\n[1] - Unit 181\n[2] - Unit 182\n[3] - Unit 190\n[4] - Unit 191")
+print(f"{Fore.CYAN}\nPlease type in the index of the intended Units seperated by just commas.\nFor example, '1' stands for just Unit 181, '0,2' stands for Units 180 and 182.")
+while (True):
+	ip_range = []
+	exam_location = []
+	raw_input = input(f"{Fore.YELLOW}Type in the index of the Exam Unit(s) (Leave empty for default): ")
+	if (raw_input == ""):
+		if exam_choice == 4:
+			exam_location = "Unit 181"
+			ip_range = "10.12.0.0/16"
+		elif exam_choice in [0, 1, 2, 3]:
+			exam_location = "Unit 181, Unit 182"
+			ip_range = "10.12.0.0/16,10.13.0.0/16"
+		break
+	try:
+		input_vals = [int(i) for i in raw_input.split(',')]
+		for item in input_vals:
+			exam_location.append(choice_arr[item][0])
+			ip_range.append(choice_arr[item][1])
+		if len(exam_location) == 0:
+			raise(Exception("You did not enter a valid exam location."))
+		if len(exam_location) == 1:
+			sep = ""
+		else:
+			sep = ", "
+		exam_location = sep.join(exam_location)
+		ip_range = sep.join(ip_range)
+		break
+	except Exception as err:
+		print(f"{Fore.RED}[ ERROR ] - {err}\nTry again")
+		continue
 
 # Get the starting time and duration of the exam. Get the time in Malaysian time, and adjust to Paris time
 # Paris time = Malaysia time - 8 hours
@@ -141,7 +179,7 @@ print(f"{Fore.CYAN}name : {choices[exam_choice][1]}")
 print(f"{Fore.CYAN}begin_at : {final_start}")
 print(f"{Fore.CYAN}end_at : {final_end}")
 print(f"{Fore.CYAN}location : {exam_location}")
-print(f"{Fore.CYAN}ip_range : \"10.11.0.0/16,10.12.0.0/16,10.13.0.0/16,10.14.0.0/16,10.15.0.0/16\"")
+print(f"{Fore.CYAN}ip_range : {ip_range}")
 print(f"{Fore.CYAN}campus_id : 34")
 print(f"{Fore.CYAN}visible: {vis_state}")
 print(f"{Fore.CYAN}project_ids : {choices[exam_choice][0]}")
@@ -157,7 +195,7 @@ payload = {
 		"begin_at": final_start,
 		"end_at": final_end,
 		"location": exam_location,
-		"ip_range": "10.11.0.0/16,10.12.0.0/16, 10.13.0.0/16, 10.14.0.0/16, 10.15.0.0/16",
+		"ip_range": ip_range,
 		"campus_id": "34",
 		"ativate_waitlist": "false",
 		"visible": vis_state,
