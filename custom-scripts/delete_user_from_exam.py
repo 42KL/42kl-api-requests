@@ -14,8 +14,9 @@ load_dotenv()
 # Yay API token stuff
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None or SECRET == None:
+if None in [UID, SECRET, CAMPUS_ID]:
 	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
@@ -29,11 +30,11 @@ token = oauth.fetch_token(
 )
 
 # Just list exams and list down the registered Cadets. Delete from there.
-get_exam_req = oauth.get(f"{SITE}/v2/campus/34/exams")
+get_exam_req = oauth.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
 
 if get_exam_req.status_code != 200:
 	print(f"{Fore.RED}[ ERROR ] - Returned code {get_exam_req.status_code}\n[ ERROR ] - {get_exam_req.text}")
-	raise Exception("Error occured while getting exams of campus 34")
+	raise Exception(f"Error occured while getting exams of campus {CAMPUS_ID}")
 
 exam_data = json.loads(get_exam_req.text)
 current_dt = dt.now()

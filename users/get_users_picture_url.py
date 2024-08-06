@@ -8,11 +8,10 @@ load_dotenv()
 
 UID = os.getenv("42-UID")  # EDIT .env file
 SECRET = os.getenv("42-SECRET")  # EDIT .env file
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None:
-    raise (Exception("UID not defined, edit .env file"))
-if SECRET == None:
-    raise (Exception("UID not defined, edit .env file"))
+if None in [UID, SECRET, CAMPUS_ID]:
+	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
 SCOPE = "public projects"
@@ -31,7 +30,7 @@ photo_links = []
 i = 1
 while True:
     response = oauth.get(
-        f"{SITE}/v2/users?filter[primary_campus_id]=34&per_page=100&page={i}"
+        f"{SITE}/v2/users?filter[primary_campus_id]={CAMPUS_ID}&per_page=100&page={i}"
     )
 
     response_json = response.json()

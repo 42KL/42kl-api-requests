@@ -17,8 +17,9 @@ load_dotenv()
 # Yay API token stuff
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None or SECRET == None:
+if None in [UID, SECRET, CAMPUS_ID]:
 	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
@@ -180,7 +181,7 @@ print(f"{Fore.CYAN}begin_at : {final_start}")
 print(f"{Fore.CYAN}end_at : {final_end}")
 print(f"{Fore.CYAN}location : {exam_location}")
 print(f"{Fore.CYAN}ip_range : {ip_range}")
-print(f"{Fore.CYAN}campus_id : 34")
+print(f"{Fore.CYAN}campus_id : {CAMPUS_ID}")
 print(f"{Fore.CYAN}visible: {vis_state}")
 print(f"{Fore.CYAN}project_ids : {choices[exam_choice][0]}")
 
@@ -196,7 +197,7 @@ payload = {
 		"end_at": final_end,
 		"location": exam_location,
 		"ip_range": ip_range,
-		"campus_id": "34",
+		"campus_id": f"{CAMPUS_ID}",
 		"ativate_waitlist": "false",
 		"visible": vis_state,
 		"project_ids": choices[exam_choice][0]

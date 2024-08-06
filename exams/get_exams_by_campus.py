@@ -12,9 +12,10 @@ load_dotenv()
 
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None or SECRET == None:
-	raise (Exception("Env variables not defined, check .env file"))
+if None in [UID, SECRET, CAMPUS_ID]:
+	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
 SCOPE = "public"
@@ -26,7 +27,7 @@ token = oauth.fetch_token(
 	token_url=f"{SITE}/oauth/token", client_id=UID, client_secret=SECRET, scope=SCOPE
 )
 
-response = oauth.get(f"{SITE}/v2/campus/34/exams")
+response = oauth.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
 
 color = Fore.GREEN
 if int(response.status_code) != 200:

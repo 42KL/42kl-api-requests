@@ -14,8 +14,9 @@ load_dotenv()
 # Yay API token stuff
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None or SECRET == None:
+if None in [UID, SECRET, CAMPUS_ID]:
 	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
@@ -43,7 +44,7 @@ student_id = student_data["id"]
 
 # Get the ID of the previous 5 exams using GET /v2/campus/:campus_id/exams
 # From there, allow admin to choose which one to register the user for.
-get_exam_req = oauth.get(f"{SITE}/v2/campus/34/exams")
+get_exam_req = oauth.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
 
 if (get_exam_req.status_code != 200):
 	raise Exception("Error on GET request for /v2/campus/:campus_id/exams")
