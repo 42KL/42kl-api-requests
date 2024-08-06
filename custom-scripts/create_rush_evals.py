@@ -16,8 +16,9 @@ load_dotenv()
 # Yay API token stuff
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None or SECRET == None:
+if None in [UID, SECRET, CAMPUS_ID]:
 	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
@@ -64,7 +65,7 @@ params = {
 		"size": 100
 	},
 	"filter": {
-		"campus": "34",
+		"campus": f"{CAMPUS_ID}",
 		"status": "waiting_for_correction"
 	}
 }

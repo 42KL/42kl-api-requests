@@ -8,11 +8,10 @@ load_dotenv()
 
 UID = os.getenv("42-UID")  # EDIT .env file
 SECRET = os.getenv("42-SECRET")  # EDIT .env file
+CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if UID == None:
-    raise (Exception("UID not defined, edit .env file"))
-if SECRET == None:
-    raise (Exception("UID not defined, edit .env file"))
+if None in [UID, SECRET, CAMPUS_ID]:
+	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
 SCOPE = "public projects"
@@ -30,7 +29,7 @@ token = oauth.fetch_token(
 info = []
 page_num = 1
 while 1:
-    response = oauth.get(f"{SITE}/v2/users?filter[primary_campus_id]=34&filter[pool_year]=2023&filter[pool_month]=september&page[size]=100&page[number]={page_num}")
+    response = oauth.get(f"{SITE}/v2/users?filter[primary_campus_id]={CAMPUS_ID}&filter[pool_year]=2023&filter[pool_month]=september&page[size]=100&page[number]={page_num}")
     page_num += 1
     for user in response.json():
         # print(user['login'])

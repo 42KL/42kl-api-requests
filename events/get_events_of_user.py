@@ -3,18 +3,18 @@ from requests_oauthlib import OAuth2Session
 from dotenv import load_dotenv
 import os
 import colorama
-from colorama import Fore
 import json
+from colorama import Fore
 
 colorama.init(autoreset=True)
 
 load_dotenv()
 
+# Yay API token stuff
 UID = os.getenv("42-UID")
 SECRET = os.getenv("42-SECRET")
-CAMPUS_ID = os.getenv("42-CAMPUS")
 
-if None in [UID, SECRET, CAMPUS_ID]:
+if UID == None or SECRET == None:
 	raise (Exception("Env variables are not defined!"))
 
 SITE = "https://api.intra.42.fr"
@@ -27,18 +27,21 @@ token = oauth.fetch_token(
 	token_url=f"{SITE}/oauth/token", client_id=UID, client_secret=SECRET, scope=SCOPE
 )
 
-response = oauth.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
+# Get feedbacks from a particular user and see what pops out.
+# OBJECTIVE - Is it possible to track event feedbacks?
 
-color = Fore.GREEN
-if int(response.status_code) != 200:
-	color = Fore.RED
-print(f"{color} {response.status_code}")
+# Target Cadet
+user_id = input("Type in the name of the Cadet to GET: ")
+
+# Make GET request
+response = oauth.get(f"{SITE}/v2/users/{user_id}/events")
+
+if response.status_code != 200:
+	print(response.status_code)
+	print(response.text)
+	raise Exception(f"KABOOM")
 
 data = json.loads(response.text)
 
-# print(data)
-
-json_obj = json.dumps(data, indent=4)
-
-with open("exams_of_campus_34.json", "w") as outfile:
-	outfile.write(json_obj)
+with open(f"{user_id}_events.json", "w") as fd:
+	json.dump(data, fd, indent=4)
