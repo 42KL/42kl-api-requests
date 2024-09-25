@@ -90,6 +90,10 @@ payload = {
 # just exit since there may be alot of teams already entered in the payload.
 # Hence, check if it is a typo and then only retrieve from intra.
 for team in teams_data:
+	if team['status'] == 'finished':
+		# The GET may retrieve buggy teams that is not part of the current Piscine.
+		print(f"{Fore.YELLOW}Skipping {team['name']}, if this is a current Pisciner, Ctrl + C {Fore.RED}immediately.")
+		continue
 	while (True):
 		evaluator_login = input(f"{Fore.YELLOW}Type in the evaluator for {team['name']}: ").lower()
 		try:

@@ -50,6 +50,7 @@ if (get_exam_req.status_code != 200):
 	raise Exception("Error on GET request for /v2/campus/:campus_id/exams")
 
 exam_data = json.loads(get_exam_req.text)
+current_dt = dt.now()
 count = 0
 options = []
 
@@ -58,7 +59,7 @@ print(f"{Fore.CYAN}|{'INDEX': ^7}|{'ID': ^9}|{'NAME': ^35}|{'DATE': ^12}|")
 print(f"{Fore.CYAN}+{'':-^7}+{'':-^9}|{'':-^35}+{'':-^12}+")
 
 for item in exam_data:
-	if count == 5:
+	if count == 5 or current_dt > (dt.fromisoformat((item['end_at'])[:-1]) + timedelta(hours=8)):
 		break
 	exam_start = item['begin_at'].split('T')[0]
 	print(f"{Fore.CYAN}|{count: ^7}|{item['id']: ^9}|{item['name']: ^35}|{exam_start: ^12}|")
