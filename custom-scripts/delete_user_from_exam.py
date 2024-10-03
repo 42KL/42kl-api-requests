@@ -6,6 +6,7 @@ import json
 import colorama
 from datetime import datetime as dt, timedelta
 from colorama import Fore
+from time import sleep
 
 colorama.init(autoreset=True)
 
@@ -72,13 +73,29 @@ print(f"{Fore.CYAN}Chosen {exam_options[exam_choice][0]} with ID {exam_id}")
 
 # Now that we have found the target exam, list down the users of the exam and prompt which one to
 # delete.
-exam_users_req = oauth.get(f"{SITE}/v2/exams/{exam_id}/exams_users")
+page_no = 1
+page_size = 100
+exam_users = []
 
-if exam_users_req.status_code != 200:
-	print(f"{Fore.RED}[ ERROR ] - Returned code {exam_users_req.status_code}\n[ ERROR ] - {exam_users_req.text}")
-	raise Exception("Error occured while getting exam users!")
+# Loop it, as there is possibility of having more than 100 exam users
+while page_size == 100:
+	payload = {
+		"page": {
+			"size": 100,
+			"number": page_no
+		}
+	}
+	exam_users_req = oauth.get(f"{SITE}/v2/exams/{exam_id}/exams_users", json=payload)
 
-exam_users = json.loads(exam_users_req.text)
+	if exam_users_req.status_code != 200:
+		print(f"{Fore.RED}[ ERROR ] - Returned code {exam_users_req.status_code}\n[ ERROR ] - {exam_users_req.text}")
+		raise Exception("Error occured while getting exam users!")
+
+	temp = json.loads(exam_users_req.text)
+	exam_users += temp
+	page_size = len(temp)
+	page_no += 1
+	sleep(0.5)
 
 if len(exam_users) == 0:
 	print(f"{Fore.GREEN}No Users have registered for this Exam Event.")

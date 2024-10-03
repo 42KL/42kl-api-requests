@@ -152,27 +152,32 @@ else:
 	default_duration = 4
 	default_time = "14:30"
 
-raw_date = input(f"{Fore.YELLOW}Type in the start date of the exam in the format DD/MM/YYYY, e.g 18/3/2024: ")
+raw_start_date = input(f"{Fore.YELLOW}Type in the start date of the exam in the format DD/MM/YYYY, e.g 18/3/2024: ")
 
 # Start time must be in the format of HH:MM, e.g. 9:00 or 15:30
-raw_time = input(f"{Fore.YELLOW}Type in the start time of the exam (default is {default_time}): ")
-if (raw_time == ""):
-	raw_time = default_time
+raw_start_time = input(f"{Fore.YELLOW}Type in the start time of the exam (default is {default_time}): ")
+if (raw_start_time == ""):
+	raw_start_time = default_time
 
-duration = input(f"{Fore.YELLOW}Type in the number of hours the exam will take (default is {default_duration} hours): ")
-if (duration == ""):
-	duration = default_duration
+# Make it so that we can put in either a number of hours, or the end time of the exam.
+print(f"{Fore.CYAN}\nEither type in the;\n\tA) End time of the exam in 24 hours format, e.g. 18:45\n\tB) Duration of the Exam as a single integer\n\tC) Leave empty for default duration ({default_duration} hours)")
+duration_input = input(f"{Fore.YELLOW}\nType in your input as elaborated above: ")
+
+dt_start = dt.strptime(f"{raw_start_date} {raw_start_time}", "%d/%m/%Y %H:%M") - timedelta(hours=8)
+
+if ':' in duration_input:
+	# An end time is given, so discard default_duration and process the final_end.
+	dt_end = dt.strptime(f"{raw_start_date} {duration_input}", "%d/%m/%Y %H:%M") - timedelta(hours=8)
+elif duration_input == "":
+	# Use default duration
+	dt_end = dt_start + timedelta(hours=default_duration)
 else:
-	duration = int(duration)
+	# A single int is given, representing the intended duration of the exam in hours.
+	dt_end = dt_start + timedelta(hours=int(duration_input))
 
-raw_start = f"{raw_date} {raw_time}"
-parsed_start = dt.strptime(raw_start, "%d/%m/%Y %H:%M")
-parsed_start = parsed_start - timedelta(hours=8)
-parsed_end = parsed_start + timedelta(hours=duration)
-
-final_start = parsed_start.strftime("%Y-%m-%dT%H:%M:00.000Z")
-final_end = parsed_end.strftime("%Y-%m-%dT%H:%M:00.000Z")
-
+print(f"{Fore.CYAN}The exam shall take place at {raw_start_date}, {raw_start_time}. Duration is {(dt_end - dt_start).total_seconds() / 3600} hours.")
+final_start = dt_start.strftime("%Y-%m-%dT%H:%M:00.000Z")
+final_end = dt_end.strftime("%Y-%m-%dT%H:%M:00.000Z")
 
 # Confirm payload before sending
 print(f"{Fore.CYAN}\nSimulated payload - Check for final details")
