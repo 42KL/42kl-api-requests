@@ -1,36 +1,14 @@
 import colorama
 from colorama import Fore
-from dotenv import load_dotenv
-import os
-from oauthlib.oauth2 import BackendApplicationClient
-from requests_oauthlib import OAuth2Session
+from FtApi import FtApi
 from datetime import datetime as dt, timedelta
 import json
 
 colorama.init(autoreset=True)
 
-load_dotenv()
-
-UID = os.getenv("42-UID")  # EDIT .env file
-SECRET = os.getenv("42-SECRET")  # EDIT .env file
-CAMPUS_ID = os.getenv("42-CAMPUS")
-
-if None in [UID, SECRET, CAMPUS_ID]:
-	raise (Exception("Env variables are not defined!"))
-
-# Create a client using the OAuth2Session with a BackendApplicationClient
-client = BackendApplicationClient(client_id=UID)
-oauth = OAuth2Session(client=client)
-
-# Fetch the token using client_credentials flow
-SITE = "https://api.intra.42.fr"
-SCOPE = "public projects"
-token = oauth.fetch_token(
-    token_url=f"{SITE}/oauth/token",
-    client_id=UID,
-    client_secret=SECRET,
-    scope=SCOPE
-)
+ft_api = FtApi()
+SITE=ft_api.site
+CAMPUS_ID = ft_api.campus
 
 # Setting up filters
 # # Piscine Pool
@@ -46,12 +24,7 @@ if POOL_MONTH == "":
 # # Exam
 # # Using /v2/campus/:campus_id/exams list exams, limit to the 5 most recent
 # # exams either on-going or in the future
-get_exam_req = oauth.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
-if (get_exam_req.status_code != 200):
-	print(f"{FOre.RED}Error on GET request for /v2/campus/:campus_id/exams")
-	exit()
-
-exam_data = json.loads(get_exam_req.text)
+exam_data = ft_api.get(f"{SITE}/v2/campus/{CAMPUS_ID}/exams")
 current_dt = dt.now()
 count = 0
 options = []
@@ -61,14 +34,20 @@ print(f"{Fore.CYAN}|{'INDEX': ^7}|{'ID': ^9}|{'NAME': ^35}|{'DATE': ^12}|")
 print(f"{Fore.CYAN}+{'':-^7}+{'':-^9}|{'':-^35}+{'':-^12}+")
 
 for item in exam_data:
-	if count == 5 or current_dt > (dt.fromisoformat((item['end_at'])[:-1]) + timedelta(hours=8)):
-		break
+#	if count == 5 or current_dt > (dt.fromisoformat((item['end_at'])[:-1]) + timedelta(hours=8)):
+#		break
 	exam_start = item['begin_at'].split('T')[0]
-	print(f"{Fore.CYAN}|{count: ^7}|{item['id']: ^9}|{item['name']: ^35}|{exam_start: ^12}|")
+	item_name = item['name']
+	if len(item_name) > 33:
+		item_name = f"{item_name[:30]}..."
+	print(f"{Fore.CYAN}|{count: ^7}|{item['id']: ^9}|{item_name: ^35}|{exam_start: ^12}|")
 	options.append([item['id'], item['name'], exam_start])
 	count += 1
 
 print(f"{Fore.CYAN}+{'':-^7}+{'':-^9}|{'':-^35}+{'':-^12}+\n")
+
+if len(options) == 0:
+	exit()
 
 exam_choice = input(f"{Fore.YELLOW}Enter the INDEX of the exam: ")
 if exam_choice == "":
@@ -85,30 +64,17 @@ proj_users = []
 for proj_id in proj_slugs:
 	GET_URL = f"{SITE}/v2/projects/{proj_id}/projects_users"
 	GET_URL = f"{GET_URL}?filter[campus]={CAMPUS_ID}"
-	GET_URL = f"{GET_URL}&page[size]=100"
-	page_num = 1
-	while 1:
-		response = oauth.get(f"{GET_URL}&page[number]={page_num}")
-		if response.status_code != 200:
-			print(f"{Fore.RED}{response.status_code}: {response.reason}")
-			break
-		for item in response.json():
-			user = item['user']
-			if user['pool_year'] == POOL_YEAR and user['pool_month'] == POOL_MONTH:
-				proj_users.append(user['login'])
-		page_num += 1
-		if (len(response.json()) < 100):
-			break
-		time.sleep(0.5)
+	proj_user_data = ft_api.get(GET_URL)
+	for item in proj_user_data:
+		user = item['user']
+		if user['pool_year'] == POOL_YEAR and user['pool_month'] == POOL_MONTH:
+			proj_users.append(user['login'])
 
 # # Pulling the exam users
 GET_URL = f"{SITE}/v2/exams/{exam_id}/exams_users"
-response = oauth.get(GET_URL)
-if response.status_code != 200:
-	print(f"{Fore.RED}{response.status_code}: {response.reason}")
-	exit()
+response = ft_api.get(GET_URL)
 exam_users = []
-for item in response.json():
+for item in response:
 	exam_users.append(item['user']['login'])
 
 # Writing data out
