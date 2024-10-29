@@ -23,8 +23,6 @@ class FtApi:
         cls.token = None
         uid, secret, cls.campus = cls.load_env()
         cls.authenticate(uid, secret)
-        if cls.token is None:
-            raise Exception("Unknown authentication failure.")
 
     """
     load_env(): loads authentication creds from the environment file
@@ -50,6 +48,8 @@ class FtApi:
             client_secret=secret,
             scope=cls.scope
         )
+        if cls.token is None:
+            raise Exception("Unknown authentication failure.")
 
     """
     get(url): fetch API data using OAuth 2.0
@@ -65,7 +65,9 @@ class FtApi:
             page_response = cls.oauth.get(f"{get_url}&page[number]={page_num}")
             page_num += 1
             if page_response.status_code != 200:
-                raise Exception("Error getting API request response.")
+                error_message = "GET failure, status_code"
+                error_message = f"{error_message} {page_response.status_code}"
+                raise Exception(error_message)
             for response in page_response.json():
                 responses.append(response)
             if len(page_response.json()) < 100:
