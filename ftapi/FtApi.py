@@ -1,7 +1,4 @@
 # FtApi.py
-"""
-FtApi: Authenticate on 42API using OAuth 2.0
-"""
 
 
 from dotenv import load_dotenv
@@ -12,10 +9,16 @@ from time import sleep
 
 
 class FtApi:
+    """The FtApi class/object contains methods to
+    - read uid and secret from an .env file.
+    - authenticate on 42 API.
+    - fetch data from 42 API.
     """
-    __init__(): define vars, load creds, authenticate
-    """
+
     def __init__(cls):
+        """on instantialisation, define attributes, load creds from .env file, 
+        authenticate on the 42 API.
+        """
         cls.site = "https://api.intra.42.fr"
         cls.scope = "public projects"
         cls.campus = None
@@ -24,10 +27,29 @@ class FtApi:
         uid, secret, cls.campus = cls.load_env()
         cls.authenticate(uid, secret)
 
-    """
-    load_env(): loads authentication creds from the environment file
-    """
+    def __str__(cls):
+        """returns the authentication status on 42 API.
+        """
+        stat = ""
+        if cls.token is None:
+            stat = "Not authenticated"
+        else:
+            stat = "Authenticated"
+        stat = f'{stat} for "{cls.scope}" on "{cls.site}".'
+        return stat
+
+    def __repr__(cls):
+        """returns values for all attributes
+        """
+        dets = f"site = {cls.site}"
+        dets = f"{dets}\nscope = {cls.scope}"
+        dets = f"{dets}\ncampus = {cls.campus}"
+        dets = f"{dets}\ntoken = {str(cls.token)}"
+        return dets
+
     def load_env(cls):
+        """loads authentication creds from the .env file
+        """
         load_dotenv()
         uid = os.getenv("42-UID")
         secret = os.getenv("42-SECRET")
@@ -36,10 +58,9 @@ class FtApi:
             raise Exception("Env variables not defined!")
         return uid, secret, campus
 
-    """
-    authenticate(): authenticate on 42API using OAuth 2.0
-    """
     def authenticate(cls, uid, secret):
+        """authenticate on 42 API using OAuth 2.0
+        """
         client = BackendApplicationClient(client_id=uid)
         cls.oauth = OAuth2Session(client=client)
         cls.token = cls.oauth.fetch_token(
@@ -51,10 +72,9 @@ class FtApi:
         if cls.token is None:
             raise Exception("Unknown authentication failure.")
 
-    """
-    get(url): fetch API data using OAuth 2.0
-    """
     def get(cls, url):
+        """fetch data using 42 API call
+        """
         if url.find("?") >= 0:
             get_url = f"{url}&page[size]=100"
         else:
@@ -63,7 +83,6 @@ class FtApi:
         page_num = 1
         while True:
             page_response = cls.oauth.get(f"{get_url}&page[number]={page_num}")
-            page_num += 1
             if page_response.status_code != 200:
                 error_message = "GET failure, status_code"
                 error_message = f"{error_message} {page_response.status_code}"
@@ -72,5 +91,6 @@ class FtApi:
                 responses.append(response)
             if len(page_response.json()) < 100:
                 break
+            page_num += 1
             sleep(0.5)
         return responses
