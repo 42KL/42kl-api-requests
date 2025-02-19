@@ -45,8 +45,8 @@ print(f"{Fore.CYAN}+{'':-^7}+{'':-^9}|{'':-^35}+{'':-^12}+")
 for item in exam_data:
 	item_end_time = dt.fromisoformat((item['end_at'])[:-1])
 	item_end_time = item_end_time + timedelta(hours=8)
-	if len(options) == 5 or current_dt > item_end_time:
-		break
+#	if len(options) == 5 or current_dt > item_end_time:
+#		break
 	item['start_date'] = item['begin_at'].split('T')[0]
 	item_name = item['name']
 	if len(item_name) > 33:
