@@ -96,6 +96,20 @@ exam_users = []
 for item in response:
 	exam_users.append(item['user']['login'])
 
+# # Calculating the users
+uniq_users = exam_users.copy()
+for user in proj_users:
+    if user not in uniq_users:
+        uniq_users.append(user)
+assert len(uniq_users) > 0, "List merging error."
+good_users = []
+bad_users = []
+for user in uniq_users:
+    if user in proj_users and user in exam_users:
+        good_users.append(user)
+    else:
+        bad_users.append(user)
+
 # Writing data out
 # # The SVG image
 with open("generate-visuals/exam-sub-status.svg") as infile:
@@ -107,18 +121,14 @@ outfile = f"{outfile}-{options[exam_choice]['start_date'].split('T')[0]}"
 outfile = f"{POOL_YEAR}-{POOL_MONTH}-{outfile}"
 
 with open(f"{outfile}.svg", "w") as out_svg:
-	svg_data = svg_data.replace("PU", str(len(proj_users)))
-	svg_data = svg_data.replace("EU", str(len(exam_users)))
+	svg_data = svg_data.replace("PU", str(len(uniq_users)))
+	svg_data = svg_data.replace("EU", str(len(good_users)))
 	print(svg_data, file=out_svg)
 	out_svg.close()
 
 # # The data table
 with open(f"{outfile}.json", "w") as out_json:
 	json_data = {}
-	bad_users = []
-	for user in proj_users:
-		if user not in exam_users:
-			bad_users.append(user)
 	json_data['bad_users'] = bad_users
 	json_data['bad_users'].sort()
 	json_data['project_users'] = proj_users

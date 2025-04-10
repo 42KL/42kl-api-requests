@@ -6,7 +6,9 @@
 
 Compares users subscribed to an exam event and users subscribed to each of
 the exam projects set in the exam event. Then, draws a visual of number of
-subs to the projects vs. number of subs to the event.
+incorrect subs (subscribed to event and not registered for project, or not
+subscribed to event and registered for project) vs. correct subs (subscribed
+to event and registered for project).
 
 Outputs a SVG infographic file and a JSON data file listing the intra login
 for bad subscriptions, project subscriptions and event subscriptions.
