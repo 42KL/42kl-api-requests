@@ -105,6 +105,7 @@ choice_arr = [
 	["Unit 182", "10.13.0.0/16"],
 	["Unit 190", "10.14.0.0/16"],
 	["Unit 191", "10.15.0.0/16"],
+	["Unit 181GF", "10.12.1.0/24,10.12.3.0/24,10.12.5.0/24"]
 ]
 print(f"{Fore.CYAN}Your options are:\n[0] - Unit 180\n[1] - Unit 181\n[2] - Unit 182\n[3] - Unit 190\n[4] - Unit 191")
 print(f"{Fore.CYAN}\nPlease type in the index of the intended Units seperated by just commas.\nFor example, '1' stands for just Unit 181, '0,2' stands for Units 180 and 182.")
@@ -114,8 +115,8 @@ while (True):
 	raw_input = input(f"{Fore.YELLOW}Type in the index of the Exam Unit(s) (Leave empty for default): ")
 	if (raw_input == ""):
 		if exam_choice == 4:
-			exam_location = "Unit 181"
-			ip_range = "10.12.0.0/16"
+			exam_location = "Unit 181GF"
+			ip_range = "10.12.1.0/24,10.12.3.0/24,10.12.5.0/24"
 		elif exam_choice in [0, 1, 2, 3]:
 			exam_location = "Unit 181, Unit 182"
 			ip_range = "10.12.0.0/16,10.13.0.0/16"

@@ -33,17 +33,17 @@ token = oauth.fetch_token(
 # This script has to be run on either Sunday, Monday or Tuesday, otherwise the exams will be
 # created for the following week.
 dt_today = dt.now()
-num_to_wed = 3 - int(dt_today.strftime("%w"))
+num_to_tues = 2 - int(dt_today.strftime("%w"))
 
-dt_wed = dt_today + timedelta(days=num_to_wed)
-if (num_to_wed <= 0):
-	dt_wed += timedelta(days=7)
-dt_sat = dt_wed + timedelta(days=3)
+dt_tues = dt_today + timedelta(days=num_to_tues)
+if (num_to_tues <= 0):
+	dt_tues += timedelta(days=7)
+dt_thurs = dt_tues + timedelta(days=2)
 
-wed_start = dt_wed.strftime("%Y-%m-%dT06:00:00.000Z")
-wed_end = dt_wed.strftime("%Y-%m-%dT09:00:00.000Z")
-sat_start = dt_sat.strftime("%Y-%m-%dT06:00:00.000Z")
-sat_end = dt_sat.strftime("%Y-%m-%dT09:00:00.000Z")
+tues_start = dt_tues.strftime("%Y-%m-%dT06:00:00.000Z")
+tues_end = dt_tues.strftime("%Y-%m-%dT09:00:00.000Z")
+thurs_start = dt_thurs.strftime("%Y-%m-%dT06:00:00.000Z")
+thurs_end = dt_thurs.strftime("%Y-%m-%dT09:00:00.000Z")
 
 # Get exam location - match it with the proper unit IP address.
 print(f"{Fore.CYAN}\n[ EXAM LOCATION SELECTION ]\n")
@@ -53,16 +53,17 @@ choice_arr = [
 	["Unit 182", "10.13.0.0/16"],
 	["Unit 190", "10.14.0.0/16"],
 	["Unit 191", "10.15.0.0/16"],
+	["Unit 181GF", "10.12.1.0/24,10.12.3.0/24,10.12.5.0/24"]
 ]
-print(f"{Fore.CYAN}Your options are:\n[0] - Unit 180\n[1] - Unit 181\n[2] - Unit 182\n[3] - Unit 190\n[4] - Unit 191")
+print(f"{Fore.CYAN}Your options are:\n[0] - Unit 180\n[1] - Unit 181\n[2] - Unit 182\n[3] - Unit 190\n[4] - Unit 191\n[5] - Unit 181GF")
 print(f"{Fore.CYAN}Please type in the index of the intended Units seperated by just commas.\nFor example, '1' stands for just Unit 181, '0,2' stands for Units 180 and 182.")
 while (True):
 	ip_range = []
 	exam_location = []
-	raw_input = input(f"{Fore.YELLOW}\nType in the index of the Exam Unit(s) (Default is 1): ")
+	raw_input = input(f"{Fore.YELLOW}\nType in the index of the Exam Unit(s) (Default is 5): ")
 	if (raw_input == ""):
-		exam_location = choice_arr[1][0]
-		ip_range = choice_arr[1][1]
+		exam_location = choice_arr[5][0]
+		ip_range = choice_arr[5][1]
 		break
 	try:
 		input_vals = [int(i) for i in raw_input.split(',')]
@@ -82,12 +83,15 @@ while (True):
 		print(f"{Fore.RED}[ ERROR ] - {err}\nTry again")
 		continue
 
+print(f"{Fore.CYAN}You have chosen to create Cadet Ranking Exam sessions at {exam_location} on {dt_tues.strftime('%d/%m')} and {dt_thurs.strftime('%d/%m')}.")
+input(f"{Fore.RED}[ CONFIRMATION ] - Press Enter/Return to create Cadet Ranking Exams with the above details.")
+
 payloads = [
 	{
 		"exam": {
 			"name": "Cadet Ranking Exam",
-			"begin_at": wed_start,
-			"end_at": wed_end,
+			"begin_at": tues_start,
+			"end_at": tues_end,
 			"location": exam_location,
 			"ip_range": ip_range,
 			"campus_id": f"{CAMPUS_ID}",
@@ -98,8 +102,8 @@ payloads = [
 	{
 		"exam": {
 			"name": "Cadet Ranking Exam",
-			"begin_at": sat_start,
-			"end_at": sat_end,
+			"begin_at": thurs_start,
+			"end_at": thurs_end,
 			"location": exam_location,
 			"ip_range": ip_range,
 			"campus_id": f"{CAMPUS_ID}",
@@ -113,9 +117,8 @@ for payload in payloads:
 	response = oauth.post(f"{SITE}/v2/exams", json=payload)
 
 	if (response.status_code == 201):
-		color = Fore.GREEN
+		print(f"{Fore.GREEN}Success for {payload['exam']['begin_at']}")
 	else:
-		color = Fore.RED
-	print(f"{color} {response.text}")
+		print(f"{Fore.RED}Failure for {payload['exam']['begin_at']}")
 
 	time.sleep(0.5)
