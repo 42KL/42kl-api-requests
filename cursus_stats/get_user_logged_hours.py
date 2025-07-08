@@ -93,10 +93,8 @@ def write_attendance_csv_header(attendance: dict = None):
     """Print CSV column names for user attendance"""
     assert attendance is not None and isinstance(attendance, dict) and \
         len(attendance.keys()) > 0, "Invalid dictionary of attendance."
-    print("\"login\",\"days\"", end="")
     for date in attendance.keys():
         print(f",\"{date}\"", end="")
-    print()
     return
 
 
@@ -106,13 +104,8 @@ def write_attendance_csv_row(login: str = None, attendance: dict = None):
         "Invalid login."
     assert attendance is not None and isinstance(attendance, dict) and \
         len(attendance.keys()) > 0, "Invalid dictionary of attendance."
-    print(f"{login}", end="")
-    hours = [attendance[date] for date in attendance.keys()]
-    hours = [x for x in hours if x > 0]
-    print(f",{len(hours)}", end="")
     for date in attendance.keys():
         print(f",{attendance[date]:0.2f}", end="")
-    print("")
     return
 
 
@@ -126,12 +119,19 @@ def main():
         CURSUS_USERS = get_cursus_users(ft_api, CURSUS_ID, BEGIN_DATE)
         LOGINS = [user["user"]["login"] for user in CURSUS_USERS]
         attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
+        print("\"login\",\"days\"", end="")
         write_attendance_csv_header(attends)
+        print()
         for login in LOGINS:
             attendance = attends.copy()
             location_data = get_user_locations(ft_api, login)
             sum_hours_per_day(location_data, attendance)
+            print(f"{login}", end="")
+            hours = [attendance[date] for date in attendance.keys()]
+            hours = [x for x in hours if x > 0]
+            print(f",{len(hours)}", end="")
             write_attendance_csv_row(login, attendance)
+            print("")
             sleep(0.5)
     except KeyboardInterrupt:
         print()

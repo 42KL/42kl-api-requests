@@ -48,12 +48,10 @@ def write_finalmark_csv_header(projects: list = None):
     """Print CSV column names for user finalmarks"""
     assert projects is not None and isinstance(projects, list) and \
         not isinstance(projects, str), "Invalid list of project names."
-    print("\"login\",\"validated\"", end="")
     for project in projects:
         print(f",\"{project['slug']}\"", end="")
     for project in projects:
         print(f",\"{project['slug']} validated?\"", end="")
-    print()
     return
 
 
@@ -68,8 +66,6 @@ def write_finalmark_csv_row(login: str = None, projects: list = None,
     assert marks is not None and isinstance(marks, dict) and \
         "validated?" in marks and "project" in marks and \
         isinstance(marks["project"], dict), "Invalid projects marks data."
-    print(login, end="")
-    print(f",{marks['validated?']}", end="")
     for project in projects:
         slug = project["slug"]
         mark = 0
@@ -82,7 +78,6 @@ def write_finalmark_csv_row(login: str = None, projects: list = None,
         if slug in marks['project']:
             stat = marks['project'][slug]['validated?']
         print(f",{stat}", end="")
-    print()
     return
 
 
@@ -97,11 +92,15 @@ def main():
         logins = dict()
         for user in users:
             logins[user["user"]["login"]] = user["user"]["id"]
+        print("\"login\",\"validated\"", end="")
         write_finalmark_csv_header(projects)
+        print()
         for login in logins.keys():
             user_id = logins[login]
             marks = get_user_project_finalmarks(ft_api, user_id)
+            print(f"{login},{marks['validated?']}", end="")
             write_finalmark_csv_row(login, projects, marks)
+            print()
             sleep(0.5)
     except BaseException as error:
         ft_write_error(f"{str(type(error))}: {error}")
