@@ -23,6 +23,22 @@ def get_logins_by_cursus(ft_api: FtApi = None,
     return logins
 
 
+def write_logins_to_file(logins: list() = None, filename: str = None):
+    """Prints logins to output file, one login per line."""
+    assert logins is not None and len(logins) > 0, \
+        "Empty list of logins. No files created."
+    assert isinstance(logins, list) and not isinstance(logins, str), \
+        "Invalid list of logins given. No files created."
+    if filename is None:
+        filename = "logins.lst"
+    with open(filename, "w") as OUTPUT_TXT:
+        for login in logins:
+            print(login, file=OUTPUT_TXT)
+    message = f"{len(logins)} logins written to {filename}"
+    ft_write_success(message)
+    return
+
+
 def main():
     """Prints list of user logins registered for a given cursus_id
     beginning on a given BEGIN_DATE to a text file."""
@@ -31,11 +47,7 @@ def main():
         BEGIN_DATE = read_input_date()
         LOGINS = get_logins_by_cursus(FtApi(), CURSUS_ID, BEGIN_DATE)
         output_filename = f"logins-{CURSUS_ID}-{BEGIN_DATE}.txt"
-        with open(output_filename, "w") as OUTPUT_TXT:
-            for login in LOGINS:
-                print(login, file=OUTPUT_TXT)
-        message = f"{len(LOGINS)} logins written to {output_filename}"
-        ft_write_success(message)
+        write_logins_to_file(LOGINS, output_filename)
     except BaseException as error:
         ft_write_error(error)
         exit()
