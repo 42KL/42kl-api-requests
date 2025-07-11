@@ -1,8 +1,10 @@
 # FtInput.py
 """Collection of functions to request input"""
 
+from datetime import datetime as dt
 from FtDateTime import is_valid_date
 from FtCursus import IDS as CURSUS_IDS
+from FtUtils import ft_write_error
 
 
 def read_input_cursus():
@@ -20,15 +22,15 @@ def read_input_cursus():
     while cursus_id not in valid_ids:
         cursus_id = input("Enter the Cursus ID: ")
         if cursus_id not in valid_ids:
-            raise Exception(f"{cursus_id} - Unsupported cursus ID")
+            ft_write_error(f"{cursus_id} - Unsupported cursus ID")
     return cursus_id
 
 
-def read_input_date():
+def read_input_date() -> dt:
     """Request user input for a date string in YYYY-mm-dd format"""
     date_str = ""
     while not is_valid_date(date_str):
-        date_str = input("Enter Cursus BEGIN date in the format YYYY-mm-dd: ")
+        date_str = input(f"Enter a date in the format YYYY-mm-dd: ")
         if not is_valid_date(date_str):
-            raise Exception(f"{date_str} - Invalid date_str format")
+            ft_write_error(f"{date_str} - Invalid date_str format")
     return date_str
