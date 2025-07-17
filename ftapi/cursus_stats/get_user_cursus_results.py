@@ -44,7 +44,7 @@ def write_results_csv_header(attendance: dict = None, projects: list = None):
         "Invalid dictionary of attendance."
     assert projects is not None and isinstance(projects, list) and \
         not isinstance(projects, str), "Invalid list of projects."
-    print("\"login\",\"days\",\"validated\"", end="")
+    print("\"login\",\"days\",\"hours\",\"validated\"", end="")
     write_attendance_csv_header(attendance)
     write_finalmark_csv_header(projects)
     print()
@@ -66,8 +66,8 @@ def write_results_csv_row(login: str = None, attendance: dict = None, \
         isinstance(marks["project"], dict), "Invalid projects marks data."
     print(login, end="")
     hours = [attendance[date] for date in attendance.keys()]
-    hours = [x for x in hours if x > 0]
-    print(f",{len(hours)}", end="")
+    print(f",{len([x for x in hours if x > 0])}", end="")
+    print(f",{sum(hours):0.2f}", end="")
     print(f",{marks['validated?']}", end="")
     write_attendance_csv_row(login, attendance)
     write_finalmark_csv_row(login, projects, marks)
