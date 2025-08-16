@@ -92,8 +92,8 @@ def sum_duration_within_range(query_begin: dt = None,
     return duration
 
 
-def write_attendance_csv_header(file: IOBase = stdout,
-                                attendance: dict = None):
+def write_attendance_csv_header(attendance: dict = None,
+                                file: IOBase = stdout):
     """Print CSV column names for user attendance"""
     assert attendance is not None and isinstance(attendance, dict) and \
         len(attendance.keys()) > 0, "Invalid dictionary of attendance."
@@ -102,9 +102,9 @@ def write_attendance_csv_header(file: IOBase = stdout,
     return
 
 
-def write_attendance_csv_row(file: IOBase = stdout,
-                             login: str = None,
-                             attendance: dict = None):
+def write_attendance_csv_row(login: str = None,
+                             attendance: dict = None,
+                             file: IOBase = stdout):
     """Print CSV row data for user attendance"""
     assert login is not None and isinstance(login, str) and len(login) > 0, \
         "Invalid login."
@@ -128,7 +128,7 @@ def main():
         attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
         with open(OUTPUT_FN, "w") as OUT:
             print("\"login\",\"days\"", end="", file=OUT)
-            write_attendance_csv_header(OUT, attends)
+            write_attendance_csv_header(attends, OUT)
             print(file=OUT)
             for login in LOGINS:
                 attendance = attends.copy()
@@ -138,7 +138,7 @@ def main():
                 hours = [attendance[date] for date in attendance.keys()]
                 hours = [x for x in hours if x > 0]
                 print(f",{len(hours)}", end="", file=OUT)
-                write_attendance_csv_row(OUT, login, attendance)
+                write_attendance_csv_row(login, attendance, OUT)
                 print("", file=OUT)
                 sleep(0.5)
             OUT.close()

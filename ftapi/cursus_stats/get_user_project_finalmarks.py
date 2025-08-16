@@ -46,7 +46,7 @@ def get_user_project_finalmarks(ft_api: FtApi = None,
     return marks
 
 
-def write_finalmark_csv_header(file: IOBase = stdout, projects: list = None):
+def write_finalmark_csv_header(projects: list = None, file: IOBase = stdout):
     """Print CSV column names for user finalmarks"""
     assert projects is not None and isinstance(projects, list) and \
         not isinstance(projects, str), "Invalid list of project names."
@@ -57,10 +57,10 @@ def write_finalmark_csv_header(file: IOBase = stdout, projects: list = None):
     return
 
 
-def write_finalmark_csv_row(file: IOBase = stdout,
-                            login: str = None,
+def write_finalmark_csv_row(login: str = None,
                             projects: list = None,
-                            marks: dict = None):
+                            marks: dict = None,
+                            file: IOBase = stdout):
     """Print CSV row data for user finalmarks"""
     assert login is not None and isinstance(login, str) and len(login) > 0, \
         "Invalid login."
@@ -99,13 +99,13 @@ def main():
             logins[user["user"]["login"]] = user["user"]["id"]
         with open(OUTPUT_FN, "w") as OUT:
             print("\"login\",\"validated\"", end="", file=OUT)
-            write_finalmark_csv_header(OUT, projects)
+            write_finalmark_csv_header(projects, OUT)
             print(file=OUT)
             for login in logins.keys():
                 user_id = logins[login]
                 marks = get_user_project_finalmarks(ft_api, user_id)
                 print(f"{login},{marks['validated?']}", end="", file=OUT)
-                write_finalmark_csv_row(OUT, login, projects, marks)
+                write_finalmark_csv_row(login, projects, marks, OUT)
                 print(file=OUT)
                 sleep(0.5)
             OUT.close()
