@@ -2,68 +2,69 @@
 """The FtUser class/object"""
 
 
-class FtUser:
-    """The FtUser class/object contains
-    - dictionary to contain data for a user to create on 42 intranet.
-    - method to validate if dictionary is valid (no missing required value.
+from dataclasses import dataclass, asdict
+from datetime import datetime as dt
+
+
+@dataclass
+class FtCursusUser:
+    """The FtCursusUser dataclass: to store data and methods for
+    creating a cursus user for a given user using 42 API (v2).
+    Methods include:
+    - asdict(): returns defined attributes as a dictionary.
     """
+    user_id: str = None
+    cursus_id: str = None
+    begin_at: str = None
+    end_at: str = None
 
-    def __init__(cls, email=None, first_name=None, last_name=None,
-                 usual_first_name=None, campus_id=None,
-                 pool_year=None, pool_month=None,
-                 cursus_id=None, begin_at=None, end_at=None):
-        """on initialisation, dictionary is created.
-        """
-        cls.required = ["email", "first_name", "last_name", "kind",
-                        "campus_id", "pool_year", "pool_month"]
-        cls.user = dict(
-                user=dict(
-                        email=email,
-                        first_name=first_name,
-                        last_name=last_name,
-                        kind="external",
-                        campus_id=campus_id,
-                        skip_welcome_mail="true",
-                        pool_year=pool_year,
-                        pool_month=pool_month
-                        )
-                )
-        if usual_first_name is not None and usual_first_name != "":
-            cls.user["user"]["usual_first_name"] = usual_first_name
-        cls.cursus = dict(
-                cursus_user=dict(
-                        cursus_id=cursus_id,
-                        begin_at=begin_at
-                )
-        )
-        if end_at is not None and end_at != "":
-            cls.cursus["cursus_user"]["end_at"] = end_at
+    def asdict(cls):
+        """Returns all non-None attributes as a dictionary"""
+        cls_dict = asdict(cls)
+        cls_dict = {k: cls_dict[k] for k in cls_dict.keys()
+                    if cls_dict[k] is not None}
+        return cls_dict
 
-    def __str__(cls):
-        """returns the values in the dictionary
-        """
-        return str(cls.user)
 
-    def __repr__(cls):
-        """returns the values in the dictionary
-        """
-        return repr(cls.user)
+@dataclass
+class FtUser:
+    """The FtUser dataclass: to store data and methods for
+    creating a user using the 42 API (v2).
+    Methods include:
+    - asdict(): returns defined attributes as a dictionary.
+    - is_postable(): validates if data is safe to POST (any missing values).
+    - whats_wrong(): returns list of undefined keys as a string (error msg).
+    """
+    REQUIRED = ["email", "first_name", "last_name", "kind",
+                "campus_id", "pool_year", "pool_month"]
+    email: str = None
+    first_name: str = None
+    last_name: str = None
+    usual_first_name: str = None
+    kind: str = "external"
+    campus_id: str = None
+    skip_welcome_mail: str = "true"
+    pool_year: str = dt.now().year
+    pool_month: str = dt.now().strftime("%B").lower()
+
+    def asdict(cls):
+        """Returns all non-None attributes as a dictionary"""
+        cls_dict = asdict(cls)
+        cls_dict = {key: cls_dict[key] for key in cls_dict.keys()
+                    if cls_dict[key] is not None}
+        return cls_dict
 
     def is_postable(cls):
-        """returns if all required parameters are not None
-        """
-        state = cls.user["user"]
-        for key in cls.required:
-            if state[key] is None:
+        """Checks if REQUIRED keys are defined"""
+        for key in cls.REQUIRED:
+            if key not in cls.asdict().keys():
                 return False
         return True
 
     def whats_wrong(cls):
-        """prints information on what"s wrong (which required values not set)
-        """
-        is_missing = "is required but not set"
-        state = cls.user["user"]
-        for key in cls.required:
-            if state[key] is None:
-                return f"{key} {is_missing}."
-        return
+        """Return as a string list of REQUIRED keys that are not defined"""
+        undef_keys = [key for key in cls.REQUIRED 
+                       if key not in cls.asdict().keys()]
+        if len(undef_keys) == 0:
+            return
+        return f"Missing values: {', '.join(undef_keys)}"
