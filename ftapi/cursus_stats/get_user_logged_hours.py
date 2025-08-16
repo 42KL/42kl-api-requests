@@ -1,13 +1,15 @@
 # get_user_logged_hours.py
 """Summarise user logins over a period of time"""
 
+from io import IOBase
+from sys import stdout
 from datetime import datetime as dt, timedelta
 from time import sleep
 from FtApi import FtApi
 from FtDateTime import is_valid_date, dt_convert
 from FtCursus import DURATION as CURSUS_DURATION, get_cursus_users
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error
+from FtUtils import ft_write_error, ft_write_success
 
 
 def make_attendance_dict(begin_date: str = None, duration: int = 0) -> dict:
@@ -55,7 +57,8 @@ def sum_hours_per_day(location_data: list = None, attendance: dict = None):
         if log_end is None:
             log_end = dt.now() - timedelta(hours=8)
         for date in attendance.keys():
-            sum_begin = dt_convert(f"{date}T00:00:00.000Z") - timedelta(hours=8)
+            date_zulu = f"{date}T00:00:00.000Z"
+            sum_begin = dt_convert(date_zulu) - timedelta(hours=8)
             sum_end = sum_begin + timedelta(hours=23, minutes=59, seconds=59)
             if log_begin is None:
                 continue
@@ -89,23 +92,26 @@ def sum_duration_within_range(query_begin: dt = None,
     return duration
 
 
-def write_attendance_csv_header(attendance: dict = None):
+def write_attendance_csv_header(file: IOBase = stdout,
+                                attendance: dict = None):
     """Print CSV column names for user attendance"""
     assert attendance is not None and isinstance(attendance, dict) and \
         len(attendance.keys()) > 0, "Invalid dictionary of attendance."
     for date in attendance.keys():
-        print(f",\"{date}\"", end="")
+        print(f",\"{date}\"", end="", file=file)
     return
 
 
-def write_attendance_csv_row(login: str = None, attendance: dict = None):
+def write_attendance_csv_row(file: IOBase = stdout,
+                             login: str = None,
+                             attendance: dict = None):
     """Print CSV row data for user attendance"""
     assert login is not None and isinstance(login, str) and len(login) > 0, \
         "Invalid login."
     assert attendance is not None and isinstance(attendance, dict) and \
         len(attendance.keys()) > 0, "Invalid dictionary of attendance."
     for date in attendance.keys():
-        print(f",{attendance[date]:0.2f}", end="")
+        print(f",{attendance[date]:0.2f}", end="", file=file)
     return
 
 
@@ -116,23 +122,28 @@ def main():
         ft_api = FtApi()
         CURSUS_ID = read_input_cursus()
         BEGIN_DATE = read_input_date()
+        OUTPUT_FN = "Hours.csv"
         CURSUS_USERS = get_cursus_users(ft_api, CURSUS_ID, BEGIN_DATE)
         LOGINS = [user["user"]["login"] for user in CURSUS_USERS]
         attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
-        print("\"login\",\"days\"", end="")
-        write_attendance_csv_header(attends)
-        print()
-        for login in LOGINS:
-            attendance = attends.copy()
-            location_data = get_user_locations(ft_api, login)
-            sum_hours_per_day(location_data, attendance)
-            print(f"{login}", end="")
-            hours = [attendance[date] for date in attendance.keys()]
-            hours = [x for x in hours if x > 0]
-            print(f",{len(hours)}", end="")
-            write_attendance_csv_row(login, attendance)
-            print("")
-            sleep(0.5)
+        with open(OUTPUT_FN, "w") as OUT:
+            print("\"login\",\"days\"", end="", file=OUT)
+            write_attendance_csv_header(OUT, attends)
+            print(file=OUT)
+            for login in LOGINS:
+                attendance = attends.copy()
+                location_data = get_user_locations(ft_api, login)
+                sum_hours_per_day(location_data, attendance)
+                print(f"{login}", end="", file=OUT)
+                hours = [attendance[date] for date in attendance.keys()]
+                hours = [x for x in hours if x > 0]
+                print(f",{len(hours)}", end="", file=OUT)
+                write_attendance_csv_row(OUT, login, attendance)
+                print("", file=OUT)
+                sleep(0.5)
+            OUT.close()
+        message = f"Hours for {len(LOGINS)} logins written to {OUTPUT_FN}"
+        ft_write_success(message)
     except KeyboardInterrupt:
         print()
         return

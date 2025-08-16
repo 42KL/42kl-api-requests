@@ -2,13 +2,15 @@
 """Summarise logged hours and final marks for each user in cursus."""
 
 import traceback
+from io import IOBase
+from sys import stdout
 from time import sleep
 from FtApi import FtApi
 from FtCursus \
     import DURATION as CURSUS_DURATION, get_cursus_users, get_cursus_projects
 from FtDateTime import is_valid_date
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error
+from FtUtils import ft_write_error, ft_write_success
 from cursus_stats.get_user_project_finalmarks \
     import get_user_project_finalmarks, \
     write_finalmark_csv_header, write_finalmark_csv_row
@@ -37,21 +39,24 @@ def get_cursus_user_login_id_dict(ft_api: FtApi = None,
     return logins
 
 
-def write_results_csv_header(attendance: dict = None, projects: list = None):
+def write_results_csv_header(file: IOBase = stdout,
+                             attendance: dict = None,
+                             projects: list = None):
     """Prints column names for results table"""
     assert attendance is not None and isinstance(attendance, dict) and \
         all([is_valid_date(key) for key in attendance.keys()]), \
         "Invalid dictionary of attendance."
     assert projects is not None and isinstance(projects, list) and \
         not isinstance(projects, str), "Invalid list of projects."
-    print("\"login\",\"days\",\"hours\",\"validated\"", end="")
-    write_attendance_csv_header(attendance)
-    write_finalmark_csv_header(projects)
-    print()
+    print("\"login\",\"days\",\"hours\",\"validated\"", end="", file=file)
+    write_attendance_csv_header(file, attendance)
+    write_finalmark_csv_header(file, projects)
+    print(file=file)
     return
 
 
-def write_results_csv_row(login: str = None, attendance: dict = None, \
+def write_results_csv_row(file: IOBase = stdout,
+                          login: str = None, attendance: dict = None,
                           projects: list = None, marks: dict = None):
     """Prints data row for results table"""
     assert login is not None and isinstance(login, str) and len(login) > 0, \
@@ -64,14 +69,14 @@ def write_results_csv_row(login: str = None, attendance: dict = None, \
     assert marks is not None and isinstance(marks, dict) and \
         "validated?" in marks and "project" in marks and \
         isinstance(marks["project"], dict), "Invalid projects marks data."
-    print(login, end="")
+    print(login, end="", file=file)
     hours = [attendance[date] for date in attendance.keys()]
-    print(f",{len([x for x in hours if x > 0])}", end="")
-    print(f",{sum(hours):0.2f}", end="")
-    print(f",{marks['validated?']}", end="")
-    write_attendance_csv_row(login, attendance)
-    write_finalmark_csv_row(login, projects, marks)
-    print()
+    print(f",{len([x for x in hours if x > 0])}", end="", file=file)
+    print(f",{sum(hours):0.2f}", end="", file=file)
+    print(f",{marks['validated?']}", end="", file=file)
+    write_attendance_csv_row(file, login, attendance)
+    write_finalmark_csv_row(file, login, projects, marks)
+    print(file=file)
     return
 
 
@@ -84,20 +89,26 @@ def main():
         logins = get_cursus_user_login_id_dict(ft_api, CURSUS_ID, BEGIN_DATE)
         attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
         projects = get_cursus_projects(ft_api, CURSUS_ID)
-        write_results_csv_header(attends, projects)
-        for login in logins.keys():
-            user_id = logins[login]
-            attendance = attends.copy()
-            location_data = get_user_locations(ft_api, login)
-            sleep(0.5)
-            sum_hours_per_day(location_data, attendance)
-            marks = get_user_project_finalmarks(ft_api, user_id)
-            sleep(0.5)
-            write_results_csv_row(login, attendance, projects, marks)
+        OUTPUT_FN = "Results.csv"
+        with open(OUTPUT_FN, "w") as OUT:
+            write_results_csv_header(OUT, attends, projects)
+            for login in logins.keys():
+                user_id = logins[login]
+                attendance = attends.copy()
+                location_data = get_user_locations(ft_api, login)
+                sleep(0.5)
+                sum_hours_per_day(location_data, attendance)
+                marks = get_user_project_finalmarks(ft_api, user_id)
+                sleep(0.5)
+                write_results_csv_row(OUT, login, attendance, projects, marks)
+            OUT.close()
+        message = f"Results for {len(logins.keys())} logins "
+        message = f"{message} written to {OUTPUT_FN}"
+        ft_write_success(message)
     except KeyboardInterrupt:
         print()
         return
-    except BaseException as error:
+    except BaseException:
         ft_write_error(traceback.format_exc())
         return
     return

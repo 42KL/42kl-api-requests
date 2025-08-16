@@ -1,11 +1,13 @@
 # get_user_project_finalmarks.py
 """Summarise final marks for each user in cursus."""
 
+from io import IOBase
+from sys import stdout
 from time import sleep
 from FtApi import FtApi
 from FtCursus import get_cursus_users, get_cursus_projects
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error
+from FtUtils import ft_write_error, ft_write_success
 
 
 def get_user_projects(ft_api: FtApi = None, user_id: str = None) -> dict():
@@ -44,18 +46,20 @@ def get_user_project_finalmarks(ft_api: FtApi = None,
     return marks
 
 
-def write_finalmark_csv_header(projects: list = None):
+def write_finalmark_csv_header(file: IOBase = stdout, projects: list = None):
     """Print CSV column names for user finalmarks"""
     assert projects is not None and isinstance(projects, list) and \
         not isinstance(projects, str), "Invalid list of project names."
     for project in projects:
-        print(f",\"{project['slug']}\"", end="")
+        print(f",\"{project['slug']}\"", end="", file=file)
     for project in projects:
-        print(f",\"{project['slug']} validated?\"", end="")
+        print(f",\"{project['slug']} validated?\"", end="", file=file)
     return
 
 
-def write_finalmark_csv_row(login: str = None, projects: list = None,
+def write_finalmark_csv_row(file: IOBase = stdout,
+                            login: str = None,
+                            projects: list = None,
                             marks: dict = None):
     """Print CSV row data for user finalmarks"""
     assert login is not None and isinstance(login, str) and len(login) > 0, \
@@ -71,13 +75,13 @@ def write_finalmark_csv_row(login: str = None, projects: list = None,
         mark = 0
         if slug in marks['project']:
             mark = marks['project'][slug]['mark']
-        print(f",{mark}", end="")
+        print(f",{mark}", end="", file=file)
     for project in projects:
         slug = project["slug"]
         stat = False
         if slug in marks['project']:
             stat = marks['project'][slug]['validated?']
-        print(f",{stat}", end="")
+        print(f",{stat}", end="", file=file)
     return
 
 
@@ -87,21 +91,27 @@ def main():
         ft_api = FtApi()
         CURSUS_ID = read_input_cursus()
         START_DATE = read_input_date()
+        OUTPUT_FN = "Finalmarks.csv"
         projects = get_cursus_projects(ft_api, CURSUS_ID)
         users = get_cursus_users(ft_api, CURSUS_ID, START_DATE)
         logins = dict()
         for user in users:
             logins[user["user"]["login"]] = user["user"]["id"]
-        print("\"login\",\"validated\"", end="")
-        write_finalmark_csv_header(projects)
-        print()
-        for login in logins.keys():
-            user_id = logins[login]
-            marks = get_user_project_finalmarks(ft_api, user_id)
-            print(f"{login},{marks['validated?']}", end="")
-            write_finalmark_csv_row(login, projects, marks)
-            print()
-            sleep(0.5)
+        with open(OUTPUT_FN, "w") as OUT:
+            print("\"login\",\"validated\"", end="", file=OUT)
+            write_finalmark_csv_header(OUT, projects)
+            print(file=OUT)
+            for login in logins.keys():
+                user_id = logins[login]
+                marks = get_user_project_finalmarks(ft_api, user_id)
+                print(f"{login},{marks['validated?']}", end="", file=OUT)
+                write_finalmark_csv_row(OUT, login, projects, marks)
+                print(file=OUT)
+                sleep(0.5)
+            OUT.close()
+        message = f"Final marks for {len(logins.keys())} logins"
+        message = f"{message} written to {OUTPUT_FN}"
+        ft_write_success(message)
     except BaseException as error:
         ft_write_error(f"{str(type(error))}: {error}")
         exit()
