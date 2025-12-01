@@ -80,3 +80,22 @@ def compute_cursus_end_from_begin(cursus_id: str = None,
         return None
     return str(end_date)
 
+
+def compute_cursus_range_from_begin(cursus_id: str = None,
+                                    begin_date: str = None) -> (dt, dt):
+    """Return cursus begin_at and end_at from given begin_at based
+    on DURATION constant"""
+    if cursus_id is None or not isinstance(cursus_id, str) or \
+            cursus_id not in DURATION or \
+            begin_date is None or not isinstance(begin_date, str) or \
+            not is_valid_date(begin_date):
+        return None
+    try:
+        begin_at = dt.strptime(begin_date, "%Y-%m-%d")
+        begin_at -= timedelta(hours=8)  ##  Adjust to MYT
+        end_at = begin_at + timedelta(days=DURATION[cursus_id])
+        end_at -= timedelta(seconds=1)
+    except BaseException as error:
+        print(error)
+        return None
+    return (begin_at, end_at)
