@@ -86,11 +86,12 @@ class FtApi:
             if page_response.status_code != 200:
                 error_message = "GET failure, status_code"
                 error_message = f"{error_message} {page_response.status_code}"
+                error_message = f"{error_message}: {page_response.reason}"
                 raise Exception(error_message)
             for response in page_response.json():
                 responses.append(response)
             if len(page_response.json()) < 100:
                 break
             page_num += 1
-            sleep(0.5)
+            sleep(0.8)
         return responses
