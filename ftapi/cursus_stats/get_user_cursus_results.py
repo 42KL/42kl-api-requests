@@ -85,7 +85,7 @@ def main():
     try:
         ft_api = FtApi()
         CURSUS_ID = read_input_cursus()
-        BEGIN_DATE = read_input_date()
+        BEGIN_DATE = read_input_date(allow_null=False)
         logins = get_cursus_user_login_id_dict(ft_api, CURSUS_ID, BEGIN_DATE)
         attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
         projects = get_cursus_projects(ft_api, CURSUS_ID)

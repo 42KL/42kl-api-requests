@@ -121,7 +121,7 @@ def main():
     try:
         ft_api = FtApi()
         CURSUS_ID = read_input_cursus()
-        BEGIN_DATE = read_input_date()
+        BEGIN_DATE = read_input_date(allow_null=False)
         OUTPUT_FN = "Hours.csv"
         CURSUS_USERS = get_cursus_users(ft_api, CURSUS_ID, BEGIN_DATE)
         LOGINS = [user["user"]["login"] for user in CURSUS_USERS]

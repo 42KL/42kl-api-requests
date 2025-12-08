@@ -90,7 +90,7 @@ def main():
     try:
         ft_api = FtApi()
         CURSUS_ID = read_input_cursus()
-        START_DATE = read_input_date()
+        START_DATE = read_input_date(allow_null=True)
         OUTPUT_FN = "Finalmarks.csv"
         projects = get_cursus_projects(ft_api, CURSUS_ID)
         users = get_cursus_users(ft_api, CURSUS_ID, START_DATE)

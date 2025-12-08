@@ -44,7 +44,7 @@ def main():
     beginning on a given BEGIN_DATE to a text file."""
     try:
         CURSUS_ID = read_input_cursus()
-        BEGIN_DATE = read_input_date()
+        BEGIN_DATE = read_input_date(allow_null=True)
         LOGINS = get_logins_by_cursus(FtApi(), CURSUS_ID, BEGIN_DATE)
         output_filename = f"logins-{CURSUS_ID}-{BEGIN_DATE}.txt"
         write_logins_to_file(LOGINS, output_filename)
