@@ -17,7 +17,7 @@ IDS = {"42": 1,
        "discovery-piscine-python": 69,
        "discovery-piscine-web-programming-essentials": 3,
        "piscine-c": 4}
-DURATION = {"9": 26, "79": 3, "80": 5, "3": 5}
+DURATION = {"9": 26, "79": 3, "80": 5, "3": 5, "21": 365}
 
 
 def get_cursus_users(ft_api: FtApi = None,
