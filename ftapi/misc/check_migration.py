@@ -33,7 +33,7 @@ def check_migration():
             user_id = f"{cursus_user['user']['id']}"
             login = cursus_user["user"]["login"]
             quests = get_user_quests_by_id(ft_api=None, user_id=user_id)
-            quests = [ f"{quest["id"]}" for quest in quests ]
+            quests = [ f"{quest['id']}" for quest in quests ]
             if "128" in quests:
                 print(f"{login},1")
             else:
