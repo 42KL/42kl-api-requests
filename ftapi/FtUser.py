@@ -41,6 +41,7 @@ class FtUser:
     first_name: str = None
     last_name: str = None
     usual_first_name: str = None
+    password: str = None
     kind: str = "external"
     campus_id: str = None
     skip_welcome_mail: str = "true"
