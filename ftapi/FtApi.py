@@ -91,7 +91,9 @@ class FtApi:
             for response in page_response.json():
                 responses.append(response)
             if len(page_response.json()) < 100:
+                page_response.close()
                 break
+            page_response.close()
             page_num += 1
             sleep(0.8)
         return responses
