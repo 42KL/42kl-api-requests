@@ -21,11 +21,18 @@ def generate_password(length: int = 12) -> str:
 
     Attributes:
         length (int): Length of the password to generate. Default is 12."""
+    allowed_chars = [string.ascii_uppercase, "!@#$%^*()_+"]
+    password = [secrets.choice(allowed_chars[0]) for n in range(length//4)]
+    password += [secrets.choice(allowed_chars[1]) for n in range(length//4)]
+    length = length - 2 * (length // 4)
     allowed_chars = [string.ascii_lowercase,
-                     string.ascii_uppercase,
                      string.digits,
-                     "!@#$%^*()-_=+[]{};:|,./?"]
-    password = [secrets.choice(allowed_chars[n % 4]) for n in range(length)]
+                     "-=;,./"]
+    password += [secrets.choice(allowed_chars[0]) for n in range(length//2)]
+    length = length - (length // 2)
+    password += [secrets.choice(allowed_chars[1]) for n in range(length//2)]
+    length = length - (length // 2)
+    password += [secrets.choice(allowed_chars[2]) for n in range(length)]
     password = ''.join(password)
     return password
 
