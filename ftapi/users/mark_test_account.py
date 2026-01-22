@@ -6,7 +6,7 @@ import sys
 from time import sleep
 from FtApi import FtApi
 from FtUtils import ft_write_error, ft_write_info, ft_write_success
-from ft_read_file import ft_read_list
+from utils.io.ft_read_file import ft_read_list
 from users.get_user_id_by_login import get_user_id_by_login
 
 
