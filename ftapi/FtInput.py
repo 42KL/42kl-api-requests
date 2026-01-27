@@ -5,7 +5,7 @@ from datetime import datetime as dt
 from sys import stderr
 from FtDateTime import is_valid_date
 from FtCursus import IDS as CURSUS_IDS
-from FtUtils import ft_write_error, ft_write_info
+from utils.io.ft_write_stderr import ft_write_error, ft_write_info
 
 
 def read_input_cursus():
@@ -28,14 +28,14 @@ def read_input_cursus():
     return cursus_id
 
 
-def read_input_date(allow_null = True) -> dt:
+def read_input_date(allow_null: bool = True) -> dt:
     """Request user input for a date string in YYYY-mm-dd format"""
     date_str = ""
     while not is_valid_date(date_str):
         print("Enter a date in the format YYYY-mm-dd: ", end="", file=stderr)
         date_str = input()
         if allow_null and len(date_str) == 0:
-            ft_write_info(f"Date not entered, proceed without date.")
+            ft_write_info("Date not entered, proceed without date.")
             return None
         if not is_valid_date(date_str):
             ft_write_error(f"{date_str} - Invalid date_str format")

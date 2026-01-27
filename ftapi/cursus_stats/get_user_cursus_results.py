@@ -10,7 +10,7 @@ from FtCursus \
     import DURATION as CURSUS_DURATION, get_cursus_users, get_cursus_projects
 from FtDateTime import is_valid_date
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, ft_write_success
 from cursus_stats.get_user_project_finalmarks \
     import get_user_project_finalmarks, \
     write_finalmark_csv_header, write_finalmark_csv_row

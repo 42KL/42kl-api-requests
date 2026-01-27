@@ -4,7 +4,7 @@
 
 import json
 from FtApi import FtApi
-from FtUtils import ft_write_error
+from utils.io.ft_write_stderr import ft_write_error
 from users.get_user_id_by_login import get_user_id_by_login
 
 

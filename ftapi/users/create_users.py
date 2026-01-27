@@ -11,7 +11,9 @@ from FtCSV import read_csv_into_list
 from FtCursus import compute_cursus_end_from_begin
 from FtDateTime import is_valid_date
 from FtUser import FtUser, FtCursusUser
-from FtUtils import ft_write_error, ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
+                                     ft_write_success
 from utils.generate_password import generate_password
 
 

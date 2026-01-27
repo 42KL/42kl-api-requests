@@ -2,7 +2,9 @@
 """Revoke a title from a user using 42 API (v2)."""
 
 from FtApi import FtApi
-from FtUtils import ft_write_error, ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
+                                     ft_write_success
 
 
 def revoke_title(ft_api: FtApi = None,

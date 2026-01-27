@@ -4,7 +4,7 @@
 from FtApi import FtApi
 from FtCursus import get_cursus_users
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, ft_write_success
 
 
 def get_logins_by_cursus(ft_api: FtApi = None,

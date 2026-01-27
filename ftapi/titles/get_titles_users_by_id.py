@@ -3,7 +3,7 @@
 
 import json
 from FtApi import FtApi
-from FtUtils import ft_write_error, ft_write_info
+from utils.io.ft_write_stderr import ft_write_error, ft_write_info
 
 
 def get_titles_users_by_id(ft_api: FtApi = None,

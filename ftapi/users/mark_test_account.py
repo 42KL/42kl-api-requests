@@ -5,7 +5,9 @@
 import sys
 from time import sleep
 from FtApi import FtApi
-from FtUtils import ft_write_error, ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
+                                     ft_write_success
 from utils.io.ft_read_file import ft_read_list
 from users.get_user_id_by_login import get_user_id_by_login
 
@@ -61,7 +63,7 @@ def main():
         get_user_id_by_login: Function to get user ID from intra login.
     """
     USAGE = f"Usage: python3 {sys.argv[0]} <logins.txt>"
-    
+
     try:
         if len(sys.argv) > 2:
             err_msg = f"ERROR: Too many arguments\n{USAGE}"

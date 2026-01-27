@@ -5,7 +5,9 @@ import sys
 from time import sleep
 from FtApi import FtApi
 from utils.io.ft_read_file import ft_read_list
-from FtUtils import ft_write_error, ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
+                                     ft_write_success
 
 
 def add_correction_points(ft_api: FtApi = None,

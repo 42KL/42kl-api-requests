@@ -4,7 +4,7 @@
 from datetime import datetime as dt, timedelta
 from FtApi import FtApi
 from FtDateTime import is_valid_date
-from FtUtils import ft_write_info
+from utils.io.ft_write_stderr import ft_write_info
 
 
 IDS = {"42": 1,
@@ -97,7 +97,7 @@ def compute_cursus_range_from_begin(cursus_id: str = None,
         return None
     try:
         begin_at = dt.strptime(begin_date, "%Y-%m-%d")
-        begin_at -= timedelta(hours=8)  ##  Adjust to MYT
+        begin_at -= timedelta(hours=8)  # Adjust to MYT
         end_at = begin_at + timedelta(days=DURATION[cursus_id])
         end_at -= timedelta(seconds=1)
     except BaseException as error:

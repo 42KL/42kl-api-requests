@@ -4,7 +4,7 @@
 from time import sleep
 import sys
 from FtApi import FtApi
-from FtUtils import ft_write_error
+from utils.io.ft_write_stderr import ft_write_error
 from achievements.add_achv_to_login import add_achv_to_login
 from utils.io.ft_read_file import ft_read_list
 

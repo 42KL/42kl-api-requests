@@ -7,7 +7,7 @@ from time import sleep
 from FtApi import FtApi
 from FtCursus import get_cursus_users, get_cursus_projects
 from FtInput import read_input_cursus, read_input_date
-from FtUtils import ft_write_error, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, ft_write_success
 
 
 def get_user_projects(ft_api: FtApi = None, user_id: str = None) -> dict():

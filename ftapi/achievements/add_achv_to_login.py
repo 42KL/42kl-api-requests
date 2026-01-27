@@ -6,7 +6,9 @@ from FtApi import FtApi
 from achievements.FtAchievementUser import FtAchievementUser
 from achievements.get_achv_rec import get_achv_rec
 from users.get_user_id_by_login import get_user_id_by_login
-from FtUtils import ft_write_error, ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
+                                     ft_write_success
 
 
 def add_achv_to_login(ft_api: FtApi = None,

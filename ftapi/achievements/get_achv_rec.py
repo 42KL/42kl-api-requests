@@ -3,7 +3,7 @@
 
 import json
 from FtApi import FtApi
-from FtUtils import ft_write_error
+from utils.io.ft_write_stderr import ft_write_error
 
 
 def get_achv_rec(ft_api: FtApi = None,
@@ -16,7 +16,7 @@ def get_achv_rec(ft_api: FtApi = None,
                         Optional, instantiated if note provided.
         achv_id (int): ID of the achievement to get user records for.
         user_id (str): User ID to get the achievement records for.
-    
+
     Returns:
         list: A list of achievement user dictionaries.
     """

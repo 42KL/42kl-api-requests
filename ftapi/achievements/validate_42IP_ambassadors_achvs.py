@@ -5,7 +5,7 @@ from time import sleep
 from FtApi import FtApi
 from achievements.FtAchievementUser import FtAchievementUser
 from achievements.get_achv_users_by_id import get_achv_users_by_id
-from FtUtils import ft_write_info, ft_write_success
+from utils.io.ft_write_stderr import ft_write_info, ft_write_success
 
 
 ACHV_REQS = {1596: 1, 1598: 3, 1599: 5, 1600: 10}

@@ -6,7 +6,7 @@ Checks if Cursus Migration (8 December 2025) is done for all eligible Cadets
 
 from time import sleep
 from FtCursus import get_cursus_users
-from FtUtils import ft_write_error
+from utils.io.ft_write_stderr import ft_write_error
 from get_user_quests import get_user_quests_by_id
 
 
