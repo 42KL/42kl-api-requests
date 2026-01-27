@@ -3,7 +3,7 @@
 
 from datetime import datetime as dt, timedelta
 from FtApi import FtApi
-from FtDateTime import is_valid_date
+from utils.ft_datetime import is_valid_date
 from utils.io.ft_write_stderr import ft_write_info
 
 

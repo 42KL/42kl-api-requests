@@ -1,4 +1,4 @@
-# FtDateTime.py
+# ft_datetime.py
 """Useful datetime functions that are reused often"""
 
 from datetime import datetime as dt

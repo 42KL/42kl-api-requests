@@ -3,7 +3,7 @@
 
 from datetime import datetime as dt
 from sys import stderr
-from FtDateTime import is_valid_date
+from utils.ft_datetime import is_valid_date
 from FtCursus import IDS as CURSUS_IDS
 from utils.io.ft_write_stderr import ft_write_error, ft_write_info
 

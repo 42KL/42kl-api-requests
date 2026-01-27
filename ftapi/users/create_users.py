@@ -8,7 +8,7 @@ import sys
 from time import sleep
 from FtApi import FtApi
 from FtCursus import compute_cursus_end_from_begin
-from FtDateTime import is_valid_date
+from utils.ft_datetime import is_valid_date
 from FtUser import FtUser, FtCursusUser
 from utils.io.ft_read_csv import read_csv_into_list
 from utils.io.ft_write_stderr import ft_write_error, \
