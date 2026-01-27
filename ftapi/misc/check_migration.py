@@ -7,7 +7,7 @@ Checks if Cursus Migration (8 December 2025) is done for all eligible Cadets
 from time import sleep
 from FtCursus import get_cursus_users
 from utils.io.ft_write_stderr import ft_write_error
-from get_user_quests import get_user_quests_by_id
+from users.get_user_quests import get_user_quests_by_id
 
 
 def check_migration():
@@ -20,9 +20,9 @@ def check_migration():
     3. PRINT 1/0 if quests include 42next (id=`128`; slug=`42next`).
     """
     try:
-        CURSUS_ID="21"
-        BEGIN_DATE="2025-09-15"
-        END_DATE="2025-12-08"
+        CURSUS_ID = "21"
+        BEGIN_DATE = "2025-09-15"
+        END_DATE = "2025-12-08"
         cursus_users = get_cursus_users(ft_api=None, cursus_id=CURSUS_ID,
                                         begin_date=BEGIN_DATE,
                                         end_date=END_DATE)
@@ -33,7 +33,7 @@ def check_migration():
             user_id = f"{cursus_user['user']['id']}"
             login = cursus_user["user"]["login"]
             quests = get_user_quests_by_id(ft_api=None, user_id=user_id)
-            quests = [ f"{quest['id']}" for quest in quests ]
+            quests = [f"{quest['id']}" for quest in quests]
             if "128" in quests:
                 print(f"{login},1")
             else:

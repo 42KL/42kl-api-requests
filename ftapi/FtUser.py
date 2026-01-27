@@ -65,7 +65,7 @@ class FtUser:
     def whats_wrong(cls):
         """Return as a string list of REQUIRED keys that are not defined"""
         undef_keys = [key for key in cls.REQUIRED 
-                       if key not in cls.asdict().keys()]
+                      if key not in cls.asdict().keys()]
         if len(undef_keys) == 0:
             return
         return f"Missing values: {', '.join(undef_keys)}"
