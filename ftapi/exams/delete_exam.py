@@ -1,6 +1,7 @@
 # delete_exam.py
 """Delete an exam using the 42 API (v2)."""
 
+import sys
 from FtApi import FtApi
 from utils.io.ft_write_stderr import ft_write_error, \
                                      ft_write_info, \
@@ -32,17 +33,34 @@ def delete_exam(ft_api: FtApi = None,
     return
 
 
-def test():
-    """Test function for delete_exam.py."""
+def main():
+    """Main function for delete_exam.py.
+    Checks if an exam ID is given as a command line argument,
+    and asks for it to be entered interactively if not.
+    Then, deletes the exam with the given ID."""
+    USAGE = f"USAGE:\n    python3 {sys.argv[0]} [exam_id]"
+    USAGE += "\n"
+    USAGE += "    exam_id: (Optional) ID of the exam to delete."
     try:
+        if sys.argv.__len__() < 2:
+            exam_id = input("Enter ID of exam to delete: ")
+        elif sys.argv.__len__() == 2:
+            exam_id = sys.argv[1]
+        else:
+            raise Exception(f"Too many arguments provided.\n{USAGE}")
         ft_api = FtApi()
-        exam_id = 28164  # Example exam ID to delete
+        exam_id = int(exam_id.strip())
         delete_exam(ft_api=ft_api, exam_id=exam_id)
-    except Exception as err:
-        ft_write_error(f"ERROR: {err}")
+    except BaseException as err:
+        err_msg = "ERROR: "
+        if f"{type(err).__name__}" != "Exception":
+            err_msg += f"{type(err).__name__}:\n"
+        if len(f"{err}") > 0:
+            err_msg += f"{err}"
+        ft_write_error(err_msg)
         exit(1)
     return None
 
 
 if __name__ == "__main__":
-    test()
+    main()
