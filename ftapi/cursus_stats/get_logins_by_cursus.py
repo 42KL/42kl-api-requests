@@ -3,7 +3,7 @@
 
 from FtApi import FtApi
 from FtCursus import get_cursus_users
-from FtInput import read_input_cursus, read_input_date
+from utils.io.ft_input import read_input_cursus, read_input_date
 from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_write_stderr import ft_write_success
 

@@ -1,4 +1,4 @@
-# FtInput.py
+# ft_input.py
 """Collection of functions to request input"""
 
 from datetime import datetime as dt

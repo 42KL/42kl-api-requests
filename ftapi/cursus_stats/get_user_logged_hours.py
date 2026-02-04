@@ -8,7 +8,7 @@ from time import sleep
 from FtApi import FtApi
 from utils.ft_datetime import is_valid_date, dt_convert
 from FtCursus import DURATION as CURSUS_DURATION, get_cursus_users
-from FtInput import read_input_cursus, read_input_date
+from utils.io.ft_input import read_input_cursus, read_input_date
 from utils.io.ft_write_stderr import ft_write_error, ft_write_success
 
 
