@@ -1,4 +1,4 @@
-# FtCSV.py
+# ft_read_csv.py
 """A collection of functions used with CSV file input"""
 
 import csv
