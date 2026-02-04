@@ -4,8 +4,8 @@
 from time import sleep
 import sys
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error
 from achievements.add_achv_to_login import add_achv_to_login
+from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_read_file import ft_read_list
 
 
@@ -37,7 +37,7 @@ def add_42IP_ambassadors() -> None:
                 add_achv_to_login(ft_api=ft_api, achv_id=achv_id, login=login)
                 sleep(0.7)
     except BaseException as error:
-        ft_write_error(f"ERROR: {error}")
+        ft_handle_error(error)  # will exit(1)
         return None
 
 

@@ -4,7 +4,7 @@
 
 import json
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error
+from utils.io.ft_handle_error import ft_handle_error
 from users.get_user_id_by_login import get_user_id_by_login
 
 
@@ -33,4 +33,4 @@ if __name__ == "__main__":
         scale_teams = get_scale_teams_by_login(ft_api, LOGIN)
         print(json.dumps(scale_teams, indent=4))
     except Exception as error:
-        ft_write_error(f"ERROR: {error}")
+        ft_handle_error(error)  # will exit(1)

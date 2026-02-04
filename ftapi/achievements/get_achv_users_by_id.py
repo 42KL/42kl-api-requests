@@ -3,7 +3,8 @@
 
 import json
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error, ft_write_info
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info
 
 
 def get_achv_users_by_id(ft_api: FtApi = None,
@@ -40,7 +41,7 @@ def test() -> None:
         print(f"Total achievement users: {len(res)}")
         return None
     except Exception as error:
-        ft_write_error(error)
+        ft_handle_error(error)  # will exit(1)
         return None
 
 

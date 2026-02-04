@@ -3,8 +3,8 @@
 
 import sys
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 
 
@@ -52,13 +52,7 @@ def main():
         exam_id = int(exam_id.strip())
         delete_exam(ft_api=ft_api, exam_id=exam_id)
     except BaseException as err:
-        err_msg = "ERROR: "
-        if f"{type(err).__name__}" != "Exception":
-            err_msg += f"{type(err).__name__}:\n"
-        if len(f"{err}") > 0:
-            err_msg += f"{err}"
-        ft_write_error(err_msg)
-        exit(1)
+        ft_handle_error(err)  # will exit(1)
     return None
 
 

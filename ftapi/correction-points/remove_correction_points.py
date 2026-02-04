@@ -4,9 +4,9 @@
 import sys
 from time import sleep
 from FtApi import FtApi
+from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_read_file import ft_read_list
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 
 
@@ -75,7 +75,7 @@ def main():
             remove_correction_points(ft_api, login, amount, reason)
             sleep(0.5)
     except BaseException as error:
-        ft_write_error(error)
+        ft_handle_error(error)  # will exit(1)
         return
     return
 

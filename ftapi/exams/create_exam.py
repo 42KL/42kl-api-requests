@@ -4,8 +4,8 @@
 import json
 from FtApi import FtApi
 from exams.FtExam import FtExam
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 
 
@@ -72,8 +72,7 @@ def test():
         exam_creator = create_exam(ft_api=ft_api, exam=exam)
         ft_write_success(json.dumps(exam_creator, indent=4))
     except Exception as err:
-        ft_write_error(f"ERROR: {err}")
-        exit(1)
+        ft_handle_error(err)  # will exit(1)
     return None
 
 

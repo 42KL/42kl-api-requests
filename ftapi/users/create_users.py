@@ -11,8 +11,8 @@ from FtCursus import compute_cursus_end_from_begin
 from utils.ft_datetime import is_valid_date
 from FtUser import FtUser, FtCursusUser
 from utils.io.ft_read_csv import read_csv_into_list
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 from utils.generate_password import generate_password
 
@@ -128,7 +128,7 @@ def main():
             print(",".join(res))
             sleep(0.6)
     except BaseException as error:
-        ft_write_error(f"Error: {error}")
+        ft_handle_error(error)  # will exit(1)
         return
     return
 

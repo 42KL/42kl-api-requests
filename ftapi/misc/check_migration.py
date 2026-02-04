@@ -6,7 +6,7 @@ Checks if Cursus Migration (8 December 2025) is done for all eligible Cadets
 
 from time import sleep
 from FtCursus import get_cursus_users
-from utils.io.ft_write_stderr import ft_write_error
+from utils.io.ft_handle_error import ft_handle_error
 from users.get_user_quests import get_user_quests_by_id
 
 
@@ -40,14 +40,10 @@ def check_migration():
                 print(f"{login},0")
             sleep(0.8)
     except BaseException as error:
-        raise error
+        ft_handle_error(error)  # will exit(1)
         return
     return
 
 
 if __name__ == "__main__":
-    try:
-        check_migration()
-    except BaseException as error:
-        ft_write_error(error)
-        exit()
+    check_migration()

@@ -5,6 +5,7 @@ from time import sleep
 from FtApi import FtApi
 from achievements.FtAchievementUser import FtAchievementUser
 from achievements.get_achv_users_by_id import get_achv_users_by_id
+from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_write_stderr import ft_write_info, ft_write_success
 
 
@@ -46,7 +47,7 @@ def validate_achv(ft_api: FtApi = None) -> None:
                 sleep(0.7)
         return None
     except Exception as error:
-        ft_write_info(f"Error: {error}")
+        ft_handle_error(error)  # will exit(1)
         return None
 
 

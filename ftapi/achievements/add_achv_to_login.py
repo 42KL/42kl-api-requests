@@ -6,8 +6,8 @@ from FtApi import FtApi
 from achievements.FtAchievementUser import FtAchievementUser
 from achievements.get_achv_rec import get_achv_rec
 from users.get_user_id_by_login import get_user_id_by_login
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 
 
@@ -70,7 +70,7 @@ def test() -> None:
         add_achv_to_login(ft_api=ft_api, achv_id=1598, login="dtrin")
         return None
     except Exception as error:
-        ft_write_error(f"Error: {error}")
+        ft_handle_error(error)  # will exit(1)
         return None
 
 

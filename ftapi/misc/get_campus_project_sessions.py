@@ -1,7 +1,8 @@
 # get_campus_project_sessions.py
 
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error, ft_write_info
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info
 
 
 def get_campus_project_sessions(ft_api: FtApi = None) -> list:
@@ -16,9 +17,8 @@ def get_campus_project_sessions(ft_api: FtApi = None) -> list:
         get_url = f"{get_url}&filter[cursus_id]=21"
         ft_write_info(get_url)
         return ft_api.get(get_url)
-    except BaseException as error:
-        raise error
-        return
+    except BaseException:
+        raise
 
 
 if __name__ == "__main__":
@@ -35,5 +35,4 @@ if __name__ == "__main__":
             psurl = f"{psurl}/project_sessions/{psid}/edit"
             print(f"{psid},{pid},\"{pn}\",\"{cd}\",\"{psurl}\"")
     except BaseException as error:
-        ft_write_error(error)
-        exit()
+        ft_handle_error(error)  # will exit(1)

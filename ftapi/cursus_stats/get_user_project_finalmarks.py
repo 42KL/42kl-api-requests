@@ -7,10 +7,11 @@ from time import sleep
 from FtApi import FtApi
 from FtCursus import get_cursus_users, get_cursus_projects
 from FtInput import read_input_cursus, read_input_date
-from utils.io.ft_write_stderr import ft_write_error, ft_write_success
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_success
 
 
-def get_user_projects(ft_api: FtApi = None, user_id: str = None) -> dict():
+def get_user_projects(ft_api: FtApi = None, user_id: str = None) -> dict:
     """GET using API projects_users data for given user_id and
     returns as dictionary"""
     if ft_api is None:
@@ -23,7 +24,7 @@ def get_user_projects(ft_api: FtApi = None, user_id: str = None) -> dict():
 
 
 def get_user_project_finalmarks(ft_api: FtApi = None,
-                                user_id: str = None) -> dict():
+                                user_id: str = None) -> dict:
     """Summarise the final marks for all projects completed by a
     given user_id"""
     if ft_api is None:
@@ -113,9 +114,7 @@ def main():
         message = f"{message} written to {OUTPUT_FN}"
         ft_write_success(message)
     except BaseException as error:
-        ft_write_error(f"{str(type(error))}: {error}")
-        exit()
-
+        ft_handle_error(error)  # will exit(1)
     return
 
 

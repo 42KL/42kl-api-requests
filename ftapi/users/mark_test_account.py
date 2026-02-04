@@ -5,8 +5,8 @@
 import sys
 from time import sleep
 from FtApi import FtApi
-from utils.io.ft_write_stderr import ft_write_error, \
-                                     ft_write_info, \
+from utils.io.ft_handle_error import ft_handle_error
+from utils.io.ft_write_stderr import ft_write_info, \
                                      ft_write_success
 from utils.io.ft_read_file import ft_read_list
 from users.get_user_id_by_login import get_user_id_by_login
@@ -83,9 +83,7 @@ def main():
             mark_test_account(ft_api=ft_api, login=login)
             sleep(0.5)
     except BaseException as error:
-        ft_write_error("ERROR: Attempt to mark test accounts failed.")
-        ft_write_error(type(error).__name__ + str(error))
-        exit()
+        ft_handle_error(error)  # will exit(1)
     return
 
 
