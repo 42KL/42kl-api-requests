@@ -19,6 +19,20 @@ def is_valid_date(date_string: str = None):
     return True
 
 
+def is_valid_time(time_string: str = None):
+    """returns True if the given time_string is a valid time string
+    conforming to the format HH:MM"""
+    assert time_string is not None, f"{time_string}: Invalid time string."
+    assert isinstance(time_string, str), f"{time_string}: Invalid time string."
+    dt_object = None
+    try:
+        dt_object = dt.strptime(time_string, "%H:%M")
+    except BaseException:
+        return False
+    assert dt_object is not None, f"{time_string}: Invalid time string."
+    return True
+
+
 def dt_convert(iso_time_string: str):
     """Convert an isoformat date time string back to date time object
     """
