@@ -1,7 +1,20 @@
-# utils.py
-"""Commonly used handy little utility functions."""
+# ft_write_stderr.py
+"""Reusable modules to print messages to stderr."""
 
 from sys import stderr
+
+
+def ft_puterr_chars(message: str):
+    """Writes messages to the screen (stderr) in default format,
+    without a newline character at the end."""
+    print(message, end="", file=stderr)
+    return
+
+
+def ft_puterr_line(message: str):
+    """Writes messages to the screen (stderr) in default format."""
+    print(message, file=stderr)
+    return
 
 
 def ft_write_error(message: str):
