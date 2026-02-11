@@ -38,9 +38,14 @@ def dt_convert(iso_time_string: str):
     """
     if iso_time_string is None or not isinstance(iso_time_string, str):
         return None
-    zulu_regex = "^[0-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]"
-    zulu_regex = f"{zulu_regex}T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]"
-    zulu_regex = f"{zulu_regex}\.[0-9][0-9][0-9]Z$"
-    if re.search(zulu_regex, iso_time_string):
-        return dt.strptime(iso_time_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-    return None
+    dt_object = None
+    try:        
+        zulu_regex = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,6}Z"
+        zulu_regex = re.compile(zulu_regex)
+        if re.fullmatch(zulu_regex, iso_time_string):
+            dt_object = dt.strptime(iso_time_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        else:
+            dt_object = dt.fromisoformat(iso_time_string)
+    except BaseException:
+        raise
+    return dt_object
