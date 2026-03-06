@@ -16,7 +16,7 @@ def generate_password(length: int = 12) -> str:
     length = length - 2 * (length // 4)
     allowed_chars = [string.ascii_lowercase,
                      string.digits,
-                     "-=;,./"]
+                     "-=;./"]
     password += [secrets.choice(allowed_chars[0]) for n in range(length//2)]
     length = length - (length // 2)
     password += [secrets.choice(allowed_chars[1]) for n in range(length//2)]
