@@ -15,7 +15,7 @@ from exams.FtExam import FtExam
 from exams.create_exam import EXAMS, create_exam
 from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_input import read_input_date, read_input_time
-from utils.io.ft_write_stderr import ft_write_success
+from utils.io.ft_write_stderr import ft_write_info, ft_write_success
 from utils.ft_datetime import dt_convert
 
 
@@ -41,6 +41,10 @@ def create_cadet_ranking_exam():
     """
     try:
         if sys.argv.__len__() < 3:
+            USAGE = f"Usage: {sys.argv[0]} <exam_date> <exam_time>"
+            USAGE += "\n    Exam date and time not provided via command line."
+            USAGE += "\n    Input after the prompts or press Ctrl+D to quit."
+            ft_write_info(USAGE)
             BEGIN_DATE = read_input_date(allow_null=False)
             BEGIN_TIME = read_input_time(allow_null=False)
         elif sys.argv.__len__() == 3:
@@ -58,8 +62,6 @@ def create_cadet_ranking_exam():
                       ip_range=EXAM_IP_RANGE,
                       campus_id=int(ft_api.campus),
                       project_ids=EXAM_PROJECTS)
-        print(exam)
-        exit
         exam_creator = create_exam(ft_api=ft_api, exam=exam)
         ft_write_success(json.dumps(exam_creator, indent=4))
     except BaseException as err:
