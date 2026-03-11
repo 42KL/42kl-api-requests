@@ -65,6 +65,7 @@ def main():
             LOGINS_FILE = sys.argv[1]
             logins = ft_read_list(LOGINS_FILE)
         else:
+            ft_write_info(USAGE)
             login_input = input("Enter a single intra login: ").strip()
             logins = [login_input] if len(login_input) > 0 else []
         if len(logins) == 0:
