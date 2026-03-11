@@ -7,9 +7,9 @@ import re
 import sys
 from time import sleep
 from FtApi import FtApi
-from FtCursus import compute_cursus_end_from_begin
+from FtUser import FtUser
+from users.add_user_to_cursus import add_user_id_to_cursus
 from utils.ft_datetime import is_valid_date
-from FtUser import FtUser, FtCursusUser
 from utils.io.ft_read_csv import read_csv_into_list
 from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_write_stderr import ft_write_info, \
@@ -41,32 +41,6 @@ def create_user(ft_user: FtUser = None, ft_api: FtApi = None):
     message += response_text["login"]
     ft_write_success(message)
     return response_text
-
-
-def add_user_id_to_cursus(ft_api: FtApi = None,
-                          user_id: str = None,
-                          cursus_id: str = None,
-                          begin_date: str = None) -> dict:
-    """Create a cursus user using 42 API (v2)"""
-    assert user_id is not None and isinstance(user_id, str) and \
-        len(user_id) > 0, "Undefined/invalid user_id, doing nothing."
-    assert cursus_id is not None and isinstance(cursus_id, str) and \
-        len(cursus_id) > 0, "Undefined/invalid cursus_id, doing nothing."
-    assert begin_date is not None and isinstance(begin_date, str) and \
-        len(begin_date) > 0 and is_valid_date(begin_date), \
-        "Undefined/invalid begin_date, doing nothing."
-    if ft_api is None or not isinstance(ft_api, FtApi):
-        ft_api = FtApi()
-    BEGIN_AT = f"{begin_date} 00:00:42"
-    END_AT = compute_cursus_end_from_begin(cursus_id=cursus_id,
-                                           begin_date=begin_date)
-    cursus_user = FtCursusUser(user_id=user_id, cursus_id=cursus_id,
-                               begin_at=BEGIN_AT, end_at=END_AT)
-    cursus_user = {"cursus_user": cursus_user.asdict()}
-    post_url = f"{ft_api.site}/v2/cursus_users"
-    post_re = ft_api.oauth.post(post_url, json=cursus_user)
-    post_re.raise_for_status()
-    return post_re
 
 
 def main():
