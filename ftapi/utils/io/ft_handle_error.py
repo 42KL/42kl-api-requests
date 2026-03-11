@@ -14,11 +14,12 @@ def ft_handle_error(err: BaseException) -> None:
     Returns:
         None
     """
-    err_msg = "ERROR: "
-    if f"{type(err).__name__}" != "Exception":
-        err_msg += f"{type(err).__name__}:\n"
-    if len(f"{err}") > 0:
-        err_msg += f"{err}"
-    ft_write_error(err_msg)
+    if not isinstance(err, EOFError):
+        err_msg = "ERROR: "
+        if f"{type(err).__name__}" != "Exception":
+            err_msg += f"{type(err).__name__}:\n"
+        if len(f"{err}") > 0:
+            err_msg += f"{err}"
+        ft_write_error(err_msg)
     exit(1)
     return None
