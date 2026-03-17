@@ -125,7 +125,20 @@ def main():
         OUTPUT_FN = "Hours.csv"
         CURSUS_USERS = get_cursus_users(ft_api, CURSUS_ID, BEGIN_DATE)
         LOGINS = [user["user"]["login"] for user in CURSUS_USERS]
-        attends = make_attendance_dict(BEGIN_DATE, CURSUS_DURATION[CURSUS_ID])
+        instructions = f"Get logged hours from {BEGIN_DATE}? [Y/n] "
+        if input(instructions).strip().lower() == "n":
+            log_begin = read_input_date(allow_null=False)
+        else:
+            log_begin = BEGIN_DATE
+        if CURSUS_ID in CURSUS_DURATION.keys():
+            instructions = f"Get logged hours for {CURSUS_DURATION[CURSUS_ID]}"
+            instructions += " days? [Y/n] "
+        if input(instructions).strip().lower() == "n":
+            instructions = "Enter number of days to get logged hours for: "
+            log_duration = int(input(instructions).strip())
+        else:
+            log_duration = CURSUS_DURATION[CURSUS_ID]
+        attends = make_attendance_dict(log_begin, log_duration)
         with open(OUTPUT_FN, "w") as OUT:
             print("\"login\",\"days\"", end="", file=OUT)
             write_attendance_csv_header(attends, OUT)
