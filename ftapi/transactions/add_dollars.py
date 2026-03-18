@@ -7,7 +7,8 @@ from FtApi import FtApi
 from users.get_user_id_by_login import get_user_id_by_login
 from utils.io.ft_handle_error import ft_handle_error
 from utils.io.ft_read_file import ft_read_list
-from utils.io.ft_write_stderr import ft_write_info, \
+from utils.io.ft_write_stderr import ft_write_error, \
+                                     ft_write_info, \
                                      ft_write_success
 
 
@@ -30,7 +31,11 @@ def add_dollars(ft_api: FtApi = None,
         "Dollars amount must be a positive integer. Nothing is done."
     if ft_api is None or not isinstance(ft_api, FtApi):
         ft_api = FtApi()
-    user_id = get_user_id_by_login(ft_api=ft_api, login=login)
+    try:
+        user_id = get_user_id_by_login(ft_api=ft_api, login=login)
+    except BaseException:
+        ft_write_error(f"Cannot get user ID for {login}. add_dollars aborted.")
+        raise
     payload = {
         "transaction": {
             "value": amount,
@@ -40,6 +45,7 @@ def add_dollars(ft_api: FtApi = None,
         }
     }
     post_url = f"{ft_api.site}/v2/transactions"
+    ft_write_info(f"POST: {post_url}\nPayload: {payload}")
     post_res = ft_api.oauth.post(post_url, json=payload)
     if int(post_res.status_code) != 201:
         error = f"ERROR: Attempt to add dollars failed for {login}."
