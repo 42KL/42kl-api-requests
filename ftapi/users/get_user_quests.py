@@ -4,7 +4,7 @@
 from time import sleep
 from FtApi import FtApi
 from utils.io.ft_write_stderr import ft_write_info
-from get_user_id_by_login import get_user_by_login
+from users.get_user_id_by_login import get_user_by_login
 
 
 def get_user_quests_by_id(ft_api: FtApi = None, user_id: str = None) -> list:
