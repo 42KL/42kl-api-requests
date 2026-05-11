@@ -9,9 +9,9 @@ with open('users_pictures_links.txt', 'r') as f:
         er_n = 0
         while er_n < 3:
             try:
-                img = Image.open(requests.get(link, stream = True).raw, mode='RGBA')
-                img.save(f'{link.split("/")[-1]}')
-                print(f"run {er_n}")
+                img = Image.open(requests.get(link, stream = True).raw, mode='r')
+                img.save(f'img/{link.split("/")[-1]}')
+                print(f"run {er_n} for {link.split('/')[-1]}")
                 break
             except Exception as err:
                 print(err)

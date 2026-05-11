@@ -15,7 +15,7 @@ from colorama import Fore
 
 colorama.init(autoreset=True)
 
-load_dotenv()
+load_dotenv(override=True)
 
 # Yay API token stuff
 UID = os.getenv("42-UID")

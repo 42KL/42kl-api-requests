@@ -100,26 +100,23 @@ if exam_choice == 4:
 # Default for Piscine - Unit 181, 182
 print(f"{Fore.CYAN}\n[ EXAM LOCATION SELECTION ]\n")
 choice_arr = [
-	["Unit 180", "10.11.0.0/16"],
-	["Unit 181", "10.12.0.0/16"],
-	["Unit 182", "10.13.0.0/16"],
-	["Unit 190", "10.14.0.0/16"],
-	["Unit 191", "10.15.0.0/16"],
-	["Unit 181GF", "10.12.1.0/24,10.12.3.0/24,10.12.5.0/24"]
+	["Cluster 1", "10.11.0.0/16"],
+	["Cluster 2", "10.12.0.0/16"]
 ]
-print(f"{Fore.CYAN}Your options are:\n[0] - Unit 180\n[1] - Unit 181\n[2] - Unit 182\n[3] - Unit 190\n[4] - Unit 191")
-print(f"{Fore.CYAN}\nPlease type in the index of the intended Units seperated by just commas.\nFor example, '1' stands for just Unit 181, '0,2' stands for Units 180 and 182.")
+print(f"{Fore.CYAN}Your options are:\n[0] - Cluster 1\n[1] - Cluster 2")
+print(f"{Fore.CYAN}\nPlease type in the index of the intended Clusters seperated by just commas.\nFor example, '1' stands for just Cluster 2, '0,2' stands for Clusters 1 and 2.")
 while (True):
 	ip_range = []
 	exam_location = []
-	raw_input = input(f"{Fore.YELLOW}Type in the index of the Exam Unit(s) (Leave empty for default): ")
+	raw_input = input(f"{Fore.YELLOW}Type in the index of the Exam Cluster(s) (Leave empty for default): ")
 	if (raw_input == ""):
+		warn_input = input(f"{Fore.RED}[ CONFIRMATION ] - You have chosen the default option, which may not be configured. Press Enter to continue.")
 		if exam_choice == 4:
-			exam_location = "Unit 181GF"
-			ip_range = "10.12.1.0/24,10.12.3.0/24,10.12.5.0/24"
+			exam_location = "Cluster 1"
+			ip_range = "10.11.0.0/16"
 		elif exam_choice in [0, 1, 2, 3]:
-			exam_location = "Unit 181, Unit 182"
-			ip_range = "10.12.0.0/16,10.13.0.0/16"
+			exam_location = "Cluster 1"
+			ip_range = "10.11.0.0/16"
 		break
 	try:
 		input_vals = [int(i) for i in raw_input.split(',')]

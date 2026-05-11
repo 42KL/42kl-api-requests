@@ -25,6 +25,16 @@ token = oauth.fetch_token(
     token_url=f"{SITE}/oauth/token", client_id=UID, client_secret=SECRET, scope=SCOPE
 )
 
+TARGETS = [
+     'hukhaw',
+     'jchuo',
+     'jteh',
+     'mravindr',
+     'rlee',
+     'sbin-abd',
+     'zyeo'
+]
+
 # Make a request
 photo_links = []
 i = 1
@@ -35,6 +45,8 @@ while True:
 
     response_json = response.json()
     for user in response_json:
+        if user['login'] not in TARGETS:
+            continue
         if (user["image"]["link"] == None):
             continue
         photo_links.append(user["image"]["link"])
